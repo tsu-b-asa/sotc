@@ -1,0 +1,1086 @@
+
+/* What allows us to have our fancy little added checkmark in the initiative tracker be on the left! */
+.combatant-control {
+  order: -1;
+}
+.combatant-control:hover img.used_and_unused_icons {
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.8));
+}
+
+.sotc {
+  /* Sheet Tabs */
+  /* Items List */
+  /* Attributes */
+}
+@font-face {
+  font-family: "skill_font";
+  src: url("/systems/sotc/assets/fonts/P22-Johnston-Underground-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "alt_skill_font";
+  src: url("/systems/sotc/assets/fonts/NotoSansDisplay_SemiCondensed-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+.die-formula {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.die-color-slash,
+.die-color-pierce,
+.die-color-blunt {
+  color: #FF4C4C; /* Red */
+}
+.die-color-counter-slash,
+.die-color-counter-pierce,
+.die-color-counter-blunt,
+.die-color-counter-block,
+.die-color-counter-evade {
+  color: #FFB84C; /* Gold */
+}
+.die-color-block,
+.die-color-evade {
+  color: #4C8CFF; /* Blue */
+}
+
+.sotc .window-content {
+  height: 100%;
+  padding: 0px;
+  overflow-y: hidden;
+}
+.sotc .prosemirror button {
+  background: var(--color-control-bg);
+}
+.sotc form {
+  height: 100%;
+}
+.sotc .sheet-header-top {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  flex-grow: 0;
+  margin-bottom: 5px;
+}
+.sotc .sheet-header-top .name_and_mini {
+  display: flex;
+  flex-direction: row;
+  padding: 0px;
+  margin-bottom: 5px;
+}
+.sotc .sheet-header-top .name_and_mini .mini_img {
+  width: 35px;
+  height: 35px;
+  margin-right: 5px;
+}
+.sotc .sheet-header-top .name_and_mini .char_name {
+  height: 35px;
+  width: 350px;
+  padding: 0px;
+  border-bottom: 0;
+  font-size: 1.5vw;
+}
+.sotc .sheet-header-top .name_and_mini .char_name input {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  text-align: center;
+  color: inherit;
+}
+.sotc .sheet-header-top .char_role {
+  width: 350px;
+  padding: 0px;
+  border-bottom: 0;
+}
+.sotc .sheet-header-top .char_role input {
+  width: 100%;
+  margin: 0;
+  color: inherit;
+  text-align: center;
+}
+.sotc .sheet-header {
+  flex: 0 0 200px;
+  width: 100%;
+  max-height: 200px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.sotc .sheet-header .header-fields {
+  display: flex;
+  flex-direction: row;
+  padding: 0px;
+  margin-bottom: 5px;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+.sotc .sheet-header .header-fields .profile-img {
+  flex: 0 0 175px;
+  height: 175px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+.sotc .sheet-header .header-fields .resource_summaries {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 200px;
+}
+.sotc .sheet-header .header-fields .resource_summaries .resource_summary {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-top: 5px;
+}
+.sotc .sheet-header .header-fields .resource_summaries .resource_summary_2 {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.sotc .sheet-header .header-fields .resource_summaries .resource_summary_2 .light_summary {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+.sotc .sheet-header .header-fields .resource_summaries .resource_summary_2 .dice_summary {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+.sotc .resource {
+  height: 30px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  float: left;
+  text-align: left;
+  gap: 5px;
+}
+.sotc .resource input {
+  width: 30px;
+  height: 30px;
+  color: inherit;
+  border: none;
+  text-align: center;
+}
+.sotc .resource img {
+  height: 30px;
+}
+.sotc .affinities input {
+  color: inherit;
+  border: none;
+}
+
+.sotc .sheet-body .summary_data {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 10px;
+}
+.sotc .attributes {
+  color: inherit;
+  border: none;
+  width: 175px;
+  margin-left: 10px;
+}
+.sotc .attributes input {
+  width: 30px;
+  color: inherit;
+  border: none;
+  text-align: center;
+}
+.sotc .misc_summary_data {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+.sotc .sheet-body .battle_abilities {
+  width: 100%;
+}
+.sotc .sheet-body .battle_abilities .battle_editor_1 {
+  height: 150px;
+}
+.sotc .sheet-body .battle_abilities .battle_editor_2 {
+  height: 150px;
+}
+.sotc .sheet-body .battle_abilities input {
+  width: 100%;
+  color: inherit;
+}
+.sotc .sheet-body .battle_abilities input::placeholder {
+  color: inherit;
+}
+
+.sotc .char_abilities {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: 10px;
+  gap: 5px;
+}
+.sotc .char_ability {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 100px;
+  margin-left: 5px;
+  margin-right: 5px;
+  width: 100%;
+}
+.sotc .char_ability input {
+  margin-left: 5px;
+  width: 30%;
+  color: inherit;
+}
+.sotc .char_ability textarea {
+  font-size: 0.7vw;
+  width: 60%;
+  color: inherit;
+  text-align: right;
+  resize: none;
+}
+
+.sotc .sheet_passives {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: 10px;
+  gap: 5px;
+}
+.sotc .passive {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 100px;
+  margin-left: 5px;
+  margin-right: 5px;
+  width: 100%;
+}
+.sotc .passive input {
+  margin-left: 5px;
+  width: 30%;
+  color: inherit;
+}
+.sotc .passive textarea {
+  font-size: 0.7vw;
+  width: 60%;
+  color: inherit;
+  text-align: right;
+  resize: none;
+}
+
+.sotc .sheet-body {
+  overflow: hidden;
+}
+.sotc .sheet-body .tab {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.sotc .skill_list {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 5px;
+  gap: 2px;
+  width: 100%;
+  height: 100%;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+  text-shadow: #fc0 1px 0 10px;
+}
+.sotc .skill_list .skill_card {
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2px;
+  align-items: center;
+  width: 33%;
+  height: 33%;
+  border: 2px double black;
+  position: relative;
+}
+.skill_mini_image_background,
+.skill_mini_image_border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.skill_mini_image_background img {
+  width: 100%;
+  object-fit: cover;
+  z-index: 0;
+  position: relative;
+}
+.skill_light_icon {
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  z-index: 2;
+  border: none;
+  align-self: flex-start;
+}
+.skill_light_char {
+  position: absolute;
+  height: 35px;
+  width: 35px;
+  z-index: 3;
+  font-family: "skill_font", sans-serif;
+  font-size: 250%;
+  color: black;
+  align-self: flex-start;
+  text-align: center;
+  text-shadow: #fc0 1px 0 10px, #fc0 1px 0 10px;
+}
+.skill_name_char,
+.skill_roll_container,
+.edit_and_delete {
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
+}
+.skill_mini_image_border img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  position: relative;
+}
+.sotc .skill_list .skill_card .skill_roll_container {
+  display: flex;
+  transition: opacity 0.6s ease;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  border: none;
+}
+.sotc .skill_list .skill_card .skill_roll_container:hover .skill_roll-button {
+  opacity: 1;
+}
+.sotc .skill_list .skill_card .edit_and_delete {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 100%;
+  gap: 5px;
+}
+.sotc .skill_list .skill_card .skill_roll-button {
+  opacity: 0;
+}
+.sotc .skill_list .skill_card .new_skill_card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  text-align: center;
+}
+
+.sotc .ego_list {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 5px;
+  gap: 2px;
+  width: 100%;
+  height: 100%;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+  text-shadow: #fc0 1px 0 10px;
+}
+.sotc .ego_list input {
+  text-align: center;
+  color: inherit;
+  font-family: "skill_font", sans-serif;
+}
+.sotc .ego_list textarea {
+  color: inherit;
+  resize: none;
+  font-size: 14px;
+  font-family: "skill_font", sans-serif;
+}
+.sotc .ego_list .ego_container {
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2px;
+  align-items: center;
+  width: 33%;
+  height: 82.5%;
+  border: 2px double black;
+  position: relative;
+}
+.sotc .ego_list .ego_container .skill_card {
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2px;
+  align-items: center;
+  width: 100%;
+  height: 40%;
+  border: 2px double black;
+  position: relative;
+}
+.ego_container .skill_mini_image_background,
+.ego_container .skill_mini_image_border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.ego_container .skill_mini_image_background img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  position: relative;
+}
+.ego_container .skill_light_icon {
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  z-index: 2;
+  border: none;
+  align-self: flex-start;
+}
+.ego_container .skill_light_char {
+  position: absolute;
+  height: 35px;
+  width: 35px;
+  z-index: 3;
+  font-family: "skill_font", sans-serif;
+  font-size: 250%;
+  color: black;
+  align-self: flex-start;
+  text-align: center;
+  text-shadow: #fc0 1px 0 10px, #fc0 1px 0 10px;
+}
+.ego_container .skill_name_char,
+.ego_container .skill_roll_container,
+.ego_container .edit_and_delete {
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
+}
+.ego_container .skill_mini_image_border img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  position: relative;
+}
+.sotc .ego_list .ego_container .skill_roll_container {
+  display: flex;
+  transition: opacity 0.6s ease;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  border: none;
+}
+.sotc .ego_list .ego_container .skill_roll_container:hover .skill_roll-button {
+  opacity: 1;
+}
+.sotc .ego_list .ego_container .edit_and_delete {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 100%;
+  gap: 5px;
+}
+.sotc .ego_list .ego_container .skill_roll-button {
+  opacity: 0;
+}
+.sotc .ego_list .ego_container .new_skill_card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  text-align: center;
+}
+
+
+.sotc .editor,
+.sotc .editor-content {
+  height: 100%;
+  color: inherit;
+}
+.sotc.sheet.actor {
+  min-width: 560px;
+  min-height: 420px;
+}
+.sotc .tabs {
+  flex: 0 0 40px;
+  border-top: 1px solid #AAA;
+  border-bottom: 1px solid #AAA;
+}
+.sotc .tabs .item {
+  line-height: 40px;
+  font-weight: bold;
+}
+.sotc .tabs .item.active {
+  text-decoration: underline;
+  text-shadow: none;
+}
+
+.sotc.sheet.item {
+  min-width: 712px;
+  min-height: 562px;
+}
+.sotc .skill {
+  display: flex;
+  flex-direction: row;
+  font-family: "skill_font", sans-serif;
+}
+.sotc .skill input {
+  font-family: "skill_font", sans-serif;
+}
+.sotc .skill textarea {
+  font-family: "skill_font", sans-serif;
+}
+.sotc .skill .skill_border {
+  width: 100%;
+  height: auto;
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.sotc .skill select {
+  color: inherit;
+}
+.sotc .skill option {
+  color: black;
+}
+/* The following covers the LEFT half of skill items, using relative and absolute positioning in order to layer the relevant variable skill images against the border */
+.sotc .skill .left {
+  display: flex;
+  flex-direction: column;
+  width: 53%;
+  height: 100%;
+  align-items: center;
+  text-shadow: white 1px 0 10px, white 1px 0 10px, white 1px 0 10px;
+  font-size: 75px;
+  position: relative;
+}
+.sotc .skill img {
+  border: none;
+}
+.sotc .skill .skill_weight_image,
+.sotc .skill .skill_emotion_image {
+  position: absolute;
+  z-index: 2;
+}
+.sotc .skill .skill_weight_image {
+  top: 1%;
+  right: 45.5%;
+  width: 18%;
+  height: auto;
+}
+.sotc .skill .skill_emotion_image {
+  bottom: 0.5%;
+  left: 1.5%;
+  width: 25%;
+  height: auto;
+}
+.sotc .skill .left input {
+  color: black;
+  text-align: center;
+  text-shadow: white 1px 0 10px, white 1px 0 10px, white 1px 0 10px;
+}
+.sotc .skill .left textarea {
+  color: inherit;
+  border: none;
+  width: 100%;
+  height: 75px;
+  resize: none;
+}
+.sotc .skill .left textarea::placeholder {
+  color: inherit;
+}
+.left_header,
+.skill_name,
+.left_footer {
+  position: relative;
+  z-index: 2;
+}
+.sotc .skill .left .left_header {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 13%;
+  justify-content: space-between;
+}
+.sotc .skill .left .skill_light {
+  width: 20%;
+  position: relative;
+  z-index: 2;
+  margin-left: 5%;
+}
+.sotc .skill .left .skill_light input {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border: none;
+}
+.sotc .skill .left .weight {
+  width: 20%;
+  position: relative;
+  z-index: 2;
+  margin-right: 4.3%;
+}
+.sotc .skill .left .weight .weight_div,
+.sotc .skill .left .skill_emotion .emotion_div {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  font-size: 75px;
+  color: black;
+  text-align: center;
+}
+.sotc .skill .left .skill_name {
+  top: 5%;
+  margin-right: 5px;
+  width: 60%;
+  height: 30px;
+  font-size: 20px;
+  text-align: center;
+  transform: rotate(-11deg);
+}
+.sotc .skill .left .skill-img_div {
+  display: flex;
+  align-items: flex-start;
+  margin-top: 2.5%;
+  height: 60%;
+  width: 100%;
+  overflow: hidden;
+  position: absolute;
+  top: 20%;
+}
+.sotc .skill .left .skill-img {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+}
+.sotc .skill .left .left_footer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 75px;
+  margin-top: 86%;
+  position: relative;
+  z-index: 2;
+  justify-content: flex-start;
+  align-items: center;
+}
+.sotc .skill .left .skill_emotion {
+  width: 20%;
+  height: 75px;
+  position: relative;
+  z-index: 2;
+  margin-left: 6%;
+  margin-bottom: 10px;
+  margin-right: 15px;
+}
+.sotc .skill .left .left_header .skill_light input {
+  height: 75px;
+  width: 75px;
+  font-size: 75px;
+  color: black;
+  text-align: center;
+}
+.sotc .skill .left .left_footer .skill_description {
+  height: 75px;
+  width: 100%;
+}
+/* The following covers the RIGHT half of the skill items, which is really the much easier half */
+.sotc .skill .right {
+  display: flex;
+  flex-direction: column;
+  width: 47%;
+  margin-top: 5px;
+  clip-path: inset(0 20px 20px 0);
+  position: relative;
+  z-index: 2;
+}
+.sotc .skill .right input {
+  color: inherit;
+}
+.sotc .skill .right textarea {
+  color: white;
+  resize: none;
+}
+.sotc .skill .right textarea::placeholder {
+  color: white;
+}
+.sotc .skill .right .right_header {
+  display: flex;
+  flex-direction: column;
+  width: 92%;
+  gap: 10px;
+}
+.sotc .skill .right .right_header .edit_and_limit {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+.sotc .skill .right .right_header .edit_and_limit .edit {
+  text-shadow: black 1px 0 5px, black 1px 0 5px, black 1px 0 5px, black 1px 0 5px, black 1px 0 5px;
+}
+.sotc .skill .right .right_header .edit_and_limit .border-button {
+  all: unset; /* Wipe all default button styles */
+  padding: 2px;
+  width: 5px;
+  height: 5px;
+  background-color: currentColor; /* Color comes from inline style or class */
+  border-radius: 0;
+  cursor: pointer;
+  display: inline-block;
+}
+.sotc .skill .right .right_header .edit_and_limit input {
+  text-align: center;
+}
+.sotc .skill .right .right_header .weight_and_emotion {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+  gap: 5%;
+}
+.sotc .skill .right .right_header .weight_and_emotion input {
+  text-align: center;
+}
+.sotc .skill .right .right_header .skill_mods {
+  width: 85%;
+  margin-right: 10px;
+  align-self: center;
+  font-family: "alt_skill_font", sans-serif;
+}
+.sotc .skill .right .dice_section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.sotc .skill .right .dice_section .dice-die {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.sotc .skill .right .dice_section .dice_mods .dice_modules-control {
+  width: 15px;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+.sotc .skill .right .dice_section .dice_mods_div {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-content: flex-start;
+}
+.sotc .skill .right .dice_section .dice_mods_div .dice_mods {
+  width: 90%;
+}
+.sotc .skill .right .dice_section .dice_mod_div_inner {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+}
+.sotc .skill .right .dice_section .dice_mod_div_inner input {
+  width: 80%;
+}
+.sotc .skill .right .dice_section .div_dice {
+  width: 100%;
+}
+.sotc .skill .right .displayed_dice {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.sotc .skill .right .displayed_dice .displayed_dice_mods {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2px;
+  margin-right: 35px;
+}
+
+
+.roll_dialog {
+  background: black;
+}
+.sotc_skill_roll_dialog .dialog,
+.sotc_skill_roll_dialog .dialog-content,
+.sotc_skill_roll_dialog .window-content {
+  padding: 0px;
+  background-color: black;
+  color: #efc281;
+}
+.roll_dialog_box {
+  display: flex;
+  flex-direction: row;
+  border: none;
+  gap: 3px;
+  height: 30px;
+  margin-bottom: 3px; 
+  margin-top: 3px; 
+  align-items: center;
+  padding: 8px;
+}
+.roll_dialog_box img{
+  border: none;
+}
+.hidden_toggle {
+  display: none;
+}
+.toggle_icon.selected {
+  filter: drop-shadow(0 0 5px #ffd700) brightness(1.3);
+  transform: scale(1.05);
+}
+.sotc_skill_roll_dialog .dialog-buttons {
+  border-top: none;
+  padding: 5px;
+  display: flex;
+  justify-content: space-evenly;
+  gap: 10px;
+  background: black;
+}
+.toggle-roll-details {
+  transition: transform 0.2s ease;
+}
+.toggle-roll-details.open {
+  transform: rotate(90deg);
+}
+
+
+.status {
+  margin: 10px;
+}
+.sotc.sheet.item.status {
+  min-width: 656px;
+  width: 656px;
+  min-height: 320px;
+  height: 320px;
+}
+.status select,
+.status input,
+.status textarea,
+.status textarea::placeholder,
+.status input::placeholder {
+  color: inherit;
+}
+.status textarea {
+  font-family: "skill_font", sans-serif;
+  margin-top: 4px;
+}
+.status option {
+  color: black;
+}
+.status_div {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  margin-top: 16px;
+  margin-left: 16px;
+  gap: 4px;
+}
+.status_info {
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+  gap: 4px;
+}
+.status_name {
+  display: flex;
+}
+.effect_potency {
+  display: flex;
+  margin-bottom: 8px;
+  align-items: center;
+}
+.post_effect_contents {
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.buffs_and_debuffs,
+.boons_and_ailments {
+  display: flex;
+  padding: 8px;
+  margin-left: 8px;
+  margin-bottom: 8px;
+  gap: 8px;
+  width: 98%;
+  justify-content: center;
+}
+.buffs,
+.debuffs,
+.boons,
+.ailments {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+.status_card {
+  display: flex;
+  width: 85%;
+}
+.status_mini_image {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: 20%;
+}
+.status_mini_image img {
+  border: none;
+  height: 46px;
+  width: auto;
+}
+.status_card_info {
+  display: flex;
+  width: 80%;
+}
+.status_name_and_buttons {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  margin-right: 8px;
+}
+.status_name_char {
+  text-align: start; 
+  margin-left: 8px; 
+  font-weight: bold; 
+  text-shadow: black 1px 0 10px, black 1px 0 10px;
+  font-size: 16px;
+  height: 12px;
+}
+.status_buttons {
+  margin-left: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.status_buttons button {
+  width: 24px;
+  height: 18px;
+  color: inherit;
+  font-size: 10px;
+  line-height: 0px;
+}
+.status_count {
+  width: 20%;
+  height: 100%;
+}
+.status_count input {
+  color: white;
+  font-size: 20px;
+  width: 90%;
+  height: 36px;
+  margin-top: 10%;
+  text-align: center;
+}
+.status_edit_and_delete {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  font-size: 10px;
+  width: 10%;
+  height: 46px;
+  align-items: center;
+}
+.status_passive_effect {
+  margin-left: 8px;
+  font-size: 12px;
+}
+.status_special_effect {
+  margin-left: 8px;
+  font-size: 12px;
+}
+.new_status_card {
+  margin-top: 4px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+}
+
+.token .effect img[data-sotc-count]:after {
+  content: attr(data-sotc-count);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  font-size: 0.7em;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 3px black;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+.passive .passive_div {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px;
+  width: 100%;
+}
+.passive_left {
+  width: 30%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.passive_right {
+  width: 60%;
+  height: 100%;
+}
+
+.passive_card {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  height: 100px;
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
+.sotc.sheet.item.passive {
+  min-width: 640px;
+  width: 640px;
+  min-height: 320px;
+  height: 320px;
+}

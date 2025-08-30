@@ -1,0 +1,51 @@
+{
+    "id": "sotc",
+    "title": "Stars of the City",
+    "description": "A system for playing Stars of the City, a Project Moon inspired TTRPG by Jakkafang & community.",
+    "authors": [
+        {
+        "name": "Tsubasa",
+        "discord": "tsubasa______"
+        }
+    ],
+    "version": 1.00,
+    "compatibility": {
+        "minimum": 11,
+        "verified": "11.315"
+    },
+    "esmodules": [
+        "module/sotc.js"
+    ],
+    "styles": [
+        "styles/sotc.css"
+    ], 
+    "packs": [
+        {
+        "name": "default-statuses",
+        "label": "Default Statuses",
+        "system": "sotc",
+        "path": "packs/default-statuses.db",
+        "type": "Item"
+        }
+    ],
+    "languages": [
+        {
+        "lang": "en",
+        "name": "English",
+        "path": "lang/en.json"
+        }
+    ],
+    "actors": {
+        "types": ["character"],
+        "default": "character"
+    },
+    "items": {
+        "types": ["skill", "status"],
+        "default": "skill"
+    },
+    "gridDistance": 5,
+    "gridUnits": "ft",
+    "primaryTokenAttribute": "Hit Points",
+    "secondaryTokenAttribute": "Stagger Resistance",
+    "background": "systems/sotc/assets/home_page.png"
+}

@@ -1,0 +1,22 @@
+<form class="roll_dialog">
+    {{#each dice as |die i|}}
+    <div class="roll_dialog_box" data-die-index="{{i}}">
+        <img src="systems/sotc/assets/dice types/{{die.type}}.png" alt="{{die.type}}" title="{{die.type}}" style="height: 30px; width: 30px;">
+        <div class="die-formula die-color-{{die.type}}" style="vertical-align: middle; width: 80px; margin-right: 5px;"><span>{{die.formula}}</span></div>
+        <input type="number" name="mod-{{i}}" placeholder="Power Modifier..." style="width: 120px; margin-right: 16px; color: white;">
+
+        <!-- Hidden checkboxes -->
+        <input class="hidden_toggle" type="checkbox" name="paralysis-{{i}}" id="paralysis-{{i}}">
+        <input class="hidden_toggle" type="checkbox" name="poise-{{i}}" id="poise-{{i}}">
+
+        <!-- Icon toggles -->
+        <img src="systems/sotc/assets/statuses/Paralyze.png"
+            class="toggle_icon" data-type="paralysis" data-index="{{i}}" alt="Paralysis" title="Paralysis"
+            style="height: 24px; width: 24px; margin-left: 5px; cursor: pointer;">
+
+        <img src="systems/sotc/assets/statuses/Poise.png"
+            class="toggle_icon" data-type="poise" data-index="{{i}}" alt="Poise" title="Poise"
+            style="height: 24px; width: 24px; margin-left: 5px; cursor: pointer;">
+    </div>
+    {{/each}}
+</form>

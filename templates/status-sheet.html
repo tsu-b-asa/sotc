@@ -1,0 +1,90 @@
+<form class="flexcol {{cssClass}}" autocomplete="off" style="background-color: #3F3F3F; background-image: url('systems/sotc/assets/sheets/Manual_Default_background.png'); background-size: cover; color: #efc281;">
+    <div class="status">
+        <div class="status_div">
+            <!-- <img class="skill_border" src="systems/sotc/assets/sheets/skills/borders/{{systemData.border_style}}.png"> -->
+            <div class="status_info">
+                <div class="status_name">
+                    <img class="profile-img" src="{{data.img}}" data-edit="img" title="{{data.name}}" style="height: 48px; width: auto;"/>
+                    <input name="name" type="text" value="{{data.name}}" placeholder="Status Effect" style="text-align: center; height: 48px; font-size: 32px; color: white;"/>
+                </div>
+                <div class="status_type">
+                    <span>Status Type:</span>
+                    <select name="system.types" style="width:120px">
+                        <option value="buff" {{#if (eq systemData.types "buff")}}selected{{/if}}>Buff</option>
+                        <option value="debuff" {{#if (eq systemData.types "debuff")}}selected{{/if}}>Debuff</option>
+                        <option value="boon" {{#if (eq systemData.types "boon")}}selected{{/if}}>Boon</option>
+                        <option value="ailment" {{#if (eq systemData.types "ailment")}}selected{{/if}}>Ailment</option>
+                    </select>
+                </div>
+                <div class="status_effect">
+                    <select name="system.condition">
+                        <option value="" {{#if (eq systemData.condition "")}}selected{{/if}}></option>
+                        <option value="active" {{#if (eq systemData.condition "active")}}selected{{/if}}>On Trigger</option>
+                        <option value="passive" {{#if (eq systemData.condition "passive")}}selected{{/if}}>Passively</option>
+                        <option value="special" {{#if (eq systemData.condition "special")}}selected{{/if}}>Special</option>
+                    </select>
+                    {{#if systemData.condition}}
+                        {{#if (ne systemData.condition "special")}}
+                            <select name="system.effect">
+                                <option value="Increase" {{#if (eq systemData.effect "Increase")}}selected{{/if}}>Increase</option>
+                                <option value="Decrease" {{#if (eq systemData.effect "Decrease")}}selected{{/if}}>Decrease</option>
+                            </select>
+                            <select name="system.target">
+                                {{#if (eq systemData.condition "active")}}
+                                    <option value="hp" {{#if (eq systemData.target "hp")}}selected{{/if}}>Hit Points</option>
+                                    <option value="stagger" {{#if (eq systemData.target "stagger")}}selected{{/if}}>Stagger Resistance</option>
+                                    <option value="hp_stagger" {{#if (eq systemData.target "hp_stagger")}}selected{{/if}}>Hit Points & Stagger Resistance</option>
+                                {{else}}
+                                    <option value="" {{#if (eq systemData.target "")}}selected{{/if}}></option>
+                                    <option value="damage affinities" {{#if (eq systemData.target "damage affinities")}}selected{{/if}}>Damage Affinity</option>
+                                    <option value="stagger affinities" {{#if (eq systemData.target "stagger affinities")}}selected{{/if}}>Stagger Affinity</option>
+                                    <option value="offensive power" {{#if (eq systemData.target "offensive power")}}selected{{/if}}>Offensive Dice Power</option>
+                                    <option value="defensive power" {{#if (eq systemData.target "defensive power")}}selected{{/if}}>Defensive Dice Power</option>
+                                    <option value="slash power" {{#if (eq systemData.target "slash power")}}selected{{/if}}>Slash Dice Power</option>
+                                    <option value="pierce power" {{#if (eq systemData.target "pierce power")}}selected{{/if}}>Pierce Dice Power</option>
+                                    <option value="blunt power" {{#if (eq systemData.target "blunt power")}}selected{{/if}}>Blunt Dice Power</option>
+                                    <option value="block power" {{#if (eq systemData.target "block power")}}selected{{/if}}>Block Dice Power</option>
+                                    <option value="evade power" {{#if (eq systemData.target "evade power")}}selected{{/if}}>Evade Dice Power</option>
+                                    <option value="speed" {{#if (eq systemData.target "speed")}}selected{{/if}}>Speed Dice Modifier</option>
+                                    <option value="number of speed dice" {{#if (eq systemData.target "number of speed dice")}}selected{{/if}}>Number of Speed Dice</option>
+                                    <option value="max hp" {{#if (eq systemData.target "max hp")}}selected{{/if}}>Maximum Hit Points</option>
+                                    <option value="max stagger resistance" {{#if (eq systemData.target "max stagger resistance")}}selected{{/if}}>Maximum Stagger Resistance</option>
+                                    <option value="max light" {{#if (eq systemData.target "max light")}}selected{{/if}}>Maximum Light</option>
+                                    <option value="light regen" {{#if (eq systemData.target "light regen")}}selected{{/if}}>Light Regen</option>
+                                {{/if}}
+                            </select>
+                            <span>by </span>
+                            <input type="number" name="system.potency" value="{{systemData.potency}}" style="width: 32px; text-align: center;"/>
+                            <span>per status count.</span>
+                        {{else}}
+                            <textarea type="text" name="system.special" placeholder="Write the effect of your status here..." style="height: 128px">{{systemData.special}}</textarea>
+                        {{/if}}
+                        {{#if (eq systemData.condition "active")}}
+                            <div class="post_effect_buttons">
+                                <div style="margin-top: 8px; margin-bottom: 4px;">Create the following buttons for triggering the status' effect and changing the count after the effect is triggered.</div>
+                                {{#each systemData.post_actives as |post_active i| }}
+                                    <div class="post_effect_contents" data-post-active="{{i}}">
+                                        <a class="post_actives-control remove-option"><i class="fas fa-minus"></i></a>
+                                        <select name="system.post_actives.{{i}}.operator">
+                                            <option value="maintain" {{#if (eq post_active.operator "maintain")}}selected{{/if}}>Trigger then Do Nothing</option>
+                                            <option value="subtract" {{#if (eq post_active.operator "subtract")}}selected{{/if}}>Trigger then Decrease By</option>
+                                            <option value="divide" {{#if (eq post_active.operator "divide")}}selected{{/if}}>Trigger then Divide By</option>
+                                            <option value="add" {{#if (eq post_active.operator "add")}}selected{{/if}}>Trigger then Increase By</option>
+                                            <option value="multiply" {{#if (eq post_active.operator "multiply")}}selected{{/if}}>Trigger then Multiply By</option>
+                                        </select>
+                                        {{#if (ne post_active.operator "maintain")}}
+                                            <input type="number" name="system.post_actives.{{i}}.variable" value="{{post_active.variable}}" style="width: 32px; text-align: center;"/>
+                                        {{/if}}
+                                    </div>
+                                {{/each}}
+                                <div style="margin-top: 4px; ">
+                                    <a class="post_actives-control add-option"><i class="fas fa-plus"></i></a>
+                                </div>
+                            </div>
+                        {{/if}}
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,185 @@
+<form class="flexcol {{cssClass}}" autocomplete="off" style="background-color: #3F3F3F; background-image: url('systems/sotc/assets/sheets/Manual_Default_background.png'); background-size: cover; color: #efc281;">
+    <div class="skill">
+        <img class="skill_border" src="systems/sotc/assets/sheets/skills/borders/{{systemData.border_style}}.png">
+        <div class="skill_weight_image">
+            {{#if (gt systemData.weight 1)}}
+                <img src="systems/sotc/assets/sheets/skills/SkillMass.png">
+            {{else}}
+                <img src="systems/sotc/assets/sheets/skills/SkillNormal.png">
+            {{/if}}
+        </div>
+        <div class = "left">
+            <div class="skill_emotion_image">
+                {{#if systemData.emotion_cost}}
+                    <img src="systems/sotc/assets/sheets/skills/SkillEmotionIcon.png">
+                {{/if}}
+            </div>
+            <div class="left_header">
+                <div class="skill_light">
+                    <input type="number" name="system.light_cost" value="{{systemData.light_cost}}"/>
+                </div>
+                <div class="weight">
+                    {{#if (gt systemData.weight 1)}}
+                        <div class="weight_div">
+                            <span class="system.weight">{{systemData.weight}}</span>
+                        </div>
+                    {{/if}}
+                </div>
+            </div>
+            <div class="skill_name">
+                <input name="name" type="text" value="{{data.name}}" placeholder="Name"/>
+            </div>
+            <div class="skill-img_div">
+                <img class="skill-img" src="{{data.img}}" data-edit="img" title="{{data.name}}"/>
+            </div>
+            <div class="left_footer">
+                <div class="skill_emotion">
+                    {{#if systemData.emotion_cost}}
+                        <div class="emotion_div">
+                            <span class="system.emotion_cost">{{systemData.emotion_cost}}</span>
+                        </div>
+                    {{/if}}
+                </div>
+                <div class="skill_description">
+                    <textarea type="text" id="skill_description_bottom" name="system.description" placeholder="Description..." style="width: 90%;">{{systemData.description}}</textarea>
+                </div>
+            </div>
+            
+
+        </div>
+        <div class="right">
+            <div class="right_header">
+                <div class="edit_and_limit">
+                    <div class="edit">
+                        <a class="toggle-edit-mode">
+                            <i class="fas fa-{{#if sheetEditMode}}check{{else}}edit{{/if}}"></i>
+                            {{#if sheetEditMode}} Save {{else}} Edit {{/if}}
+                        </a>
+                    </div>
+                    <div class="border-selector">
+                        {{#if sheetEditMode}}
+                        <button type="button" class="border-button" data-border="paperback" style="background-color: green; width: 5px;"></button>
+                        <button type="button" class="border-button" data-border="hardcover" style="background-color: blue; width: 5px;"></button>
+                        <button type="button" class="border-button" data-border="limited" style="background-color: purple; width: 5px;"></button>
+                        <button type="button" class="border-button" data-border="objec d'art" style="background-color: gold; width: 5px;"></button>
+                        <button type="button" class="border-button" data-border="ego" style="background-color: red; width: 5px;"></button>
+                        {{/if}}
+                    </div>
+                    <div class="limit">
+                        {{#if sheetEditMode}}
+                            <span>Limit: </span>
+                            <input type="number" name="system.limit.value" value="{{systemData.limit.value}}" style="width:20px">
+                            <span>/</span>
+                            <input type="number" name="system.limit.max" value="{{systemData.limit.max}}" style="width:20px">
+                        {{else}}
+                            {{#if systemData.limit.max}}
+                                <span>Limit: </span>
+                                <input type="number" name="system.limit.value" value="{{systemData.limit.value}}" style="width:20px">
+                                <span>/</span>
+                                <span class="system.limit.max">{{systemData.limit.max}}</span>
+                            {{/if}}
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="weight_and_emotion">
+                    <div class="skill_weight">
+                        {{#if sheetEditMode}}
+                            <span>Attack Weight: </span>
+                            <input type="number" name="system.weight" value="{{systemData.weight}}" style="width:20px">
+                        {{/if}}
+                    </div>
+                    <div class="skill_emotion">
+                        {{#if sheetEditMode}}
+                            <span>Emotion Cost: </span>
+                            <input type="number" name="system.emotion_cost" value="{{systemData.emotion_cost}}" style="width:20px"/>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="skill_mods">
+                    {{#if sheetEditMode}}
+                    <textarea type="text" name="system.skill_modules.mods" placeholder="[On Use] ...">{{systemData.skill_modules.mods}}</textarea>
+                    {{else}}
+                    <span class="system.skill_modules.mods" style="width: 100%; height: auto; overflow-wrap: break-word; white-space: pre-line; color: white;">{{systemData.skill_modules.mods}}</span>
+                    {{/if}}
+                </div>
+                <!-- I have decided that separating skill modules into multiple textareas is silly! As such, they shall be grouped together for now.
+                <ol class="skill_mods">
+                    {{#each systemData.skill_modules.mods as |mods i| }}
+                    <li class="skill_modules-mods flexrow" data-skill_modules-mods="{{i}}">
+                        <textarea type="text" name="system.skill_modules.mods.{{i}}" placeholder="[On Use] ...">{{mods}}</textarea>
+                        <a class="skill_modules-control delete-skill_modules"><i class="fas fa-minus"></i></a>
+                    </li>
+                    {{/each}}
+                </ol>
+                <div class="skill_mod-header">
+                    <a class="skill_modules-control add-skill_modules"><i class="fas fa-plus"></i></a>
+                </div>
+                -->
+            </div>
+            <div class="dice_section">
+                <ol class="dice-die">
+                    {{#each systemData.dice.die as |die i| }}
+                    <li class="dice-die flexrow" data-dice-die="{{i}}">
+                        <div class="dice_div">
+                            {{#if ../sheetEditMode}}
+                            <!-- Editable version -->
+                            <a class="dice-control delete-dice" style="width:15px"><i class="fas fa-minus"></i></a>
+                            <select name="system.dice.die.{{i}}.type" style="width:120px">
+                                <option value="slash" {{#if (eq die.type "slash")}}selected{{/if}}>Slash</option>
+                                <option value="pierce" {{#if (eq die.type "pierce")}}selected{{/if}}>Pierce</option>
+                                <option value="blunt" {{#if (eq die.type "blunt")}}selected{{/if}}>Blunt</option>
+                                <option value="evade" {{#if (eq die.type "evade")}}selected{{/if}}>Evade</option>
+                                <option value="block" {{#if (eq die.type "block")}}selected{{/if}}>Block</option>
+                                <option value="counter-slash" {{#if (eq die.type "counter-slash")}}selected{{/if}}>Counter-Slash</option>
+                                <option value="counter-pierce" {{#if (eq die.type "counter-pierce")}}selected{{/if}}>Counter-Pierce</option>
+                                <option value="counter-blunt" {{#if (eq die.type "counter-blunt")}}selected{{/if}}>Counter-Blunt</option>
+                                <option value="counter-evade" {{#if (eq die.type "counter-evade")}}selected{{/if}}>Counter-Evade</option>
+                                <option value="counter-block" {{#if (eq die.type "counter-block")}}selected{{/if}}>Counter-Block</option>
+                            </select>
+                            <input type="text" name="system.dice.die.{{i}}.formula" value="{{die.formula}}" data-formula-editor style="width: 60px; margin-right: 5px;"/>
+                            <img src="systems/sotc/assets/sheets/skills/DiceSlotIcon.webp" class="skill-die-button rollable" data-index="{{i}}" alt="Roll" style="width: auto; height: 24px; cursor: pointer; vertical-align: middle;">
+                            {{else}}
+                            <!-- Read-only version -->
+                            <div class="displayed_dice">
+                                <img src="systems/sotc/assets/dice types/{{die.type}}.png" class="skill-die-button rollable" data-index="{{i}}" style="width: auto; height: 45px; border: none; cursor: pointer;"/>
+                                <div class="die-formula die-color-{{die.type}}" style="vertical-align: middle; margin-right: 5px;"><span>{{die.formula}}</span></div>
+                                <div class="displayed_dice_mods">
+                                    {{#each die.mods as |mods j| }}
+                                    <span class="system.dice.die.{{@../index}}.mods.{{j}}">{{mods}}</span>
+                                    {{/each}}
+                                </div>
+                            </div>
+                            
+                            {{/if}}
+                        </div>
+                        {{#if ../sheetEditMode}}
+                        <div class="dice_mods_div">
+                            <a class="dice_modules-control add-dice_modules" style="margin-top: 11px; height: 20px;"><i class="fas fa-plus"></i></a>
+                            <ol class="dice_mods">
+                                {{#each die.mods as |mods j| }}
+                                <!-- Haha! I have conceived of an idea most ingenius! I will use {{@../index}} to refer to the outer loop's index i, and I will pass it to my js! -->
+                                <li class="dice_modules-mods flexrow" data-dice-mod="{{j}}" data-die-index="{{@../index}}">
+                                    <div class="dice_mod_div_inner">
+                                        <a class="dice_modules-control delete-dice_modules" style="width:15px; margin-right: 5px;"><i class="fas fa-minus"></i></a>
+                                        <input type="text" name="system.dice.die.{{@../index}}.mods.{{j}}" value="{{mods}}" placeholder="[Clash Win] ...">
+                                    </div>
+                                </li>
+                                {{/each}}
+                            </ol>
+                        </div>
+                        {{/if}}
+                    </li>
+                    {{else}}
+                    <li><span>This Skill Has No Dice.</span></li>
+                    {{/each}}
+                </ol>
+                <h4 class="dice-header">
+                    {{#if sheetEditMode}}
+                    <a class="dice-control add-dice"><i class="fas fa-plus"></i></a>
+                    {{/if}}
+                </h4>
+            </div>
+        </div>
+    </div>
+</form>
+
