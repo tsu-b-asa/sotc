@@ -4,7 +4,7 @@
     "description": "A system for playing Stars of the City, a Project Moon inspired TTRPG by Jakkafang & community.",
     "url": "https://github.com/tsu-b-asa/sotc",
     "manifest": "https://raw.githubusercontent.com/tsu-b-asa/sotc/master/system.json",
-    "download": "https://github.com/foundryvtt/sotc/releases/download/version-1.00/sotc-version-1.00.zip",
+    "download": "https://github.com/tsu-b-asa/sotc/releases/download/version-1.00/sotc-version-1.00.zip",
     "authors": [
         {
         "name": "Tsubasa",
