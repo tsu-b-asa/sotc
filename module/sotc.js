@@ -267,6 +267,9 @@ Hooks.on("renderCombatTracker", (app, html, data) => {
 });
 
 Hooks.on("createCombatant", async (combatant, options, userId) => {
+  // If someone other than the gm runs the code (as it's run client side), then things get messy and we get duplicate entries
+  if (!game.user.isGM) return;
+
   if (combatant.flags?.sotc?.isSpeedDieClone) return;
   const actor = combatant.actor;
   if (!actor || !actor.system?.speed_dice) return;

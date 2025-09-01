@@ -209,7 +209,7 @@ export class SotCActorSheet extends ActorSheet {
             const skillModules = item.system.skill_modules?.mods;
             const weight = item.system.weight;
             const weightLine = weight > 1 ? `<p><strong>Attack Weight:</strong> ${weight}</p>` : "";
-            const skillModulesLine = skillModules ? `<p>${skillModules}</p>` : "";
+            const skillModulesLine = skillModules ? `<div class="skill-modules" style="white-space: pre-wrap;">${skillModules}</div>` : "";
 
             // Non-Optional. This is why you're printing the skill, obviously it's not optional? Are you stupid?
             const diceSummaries = dice.map(die => {
@@ -319,7 +319,7 @@ export class SotCActorSheet extends ActorSheet {
             const weight = item.system.weight;
 
             const weightLine = weight > 1 ? `<p><strong>Attack Weight:</strong> ${weight}</p>` : "";
-            const skillModulesLine = skillModules ? `<p>${skillModules}</p>` : "";
+            const skillModulesLine = skillModules ? `<div class="skill-modules" style="white-space: pre-wrap;">${skillModules}</div>` : "";
 
             // Dice display
             const diceSummaries = results.map(({ die, roll, formulaForDisplay }) => {
@@ -438,13 +438,14 @@ export class SotCActorSheet extends ActorSheet {
     if (button.classList.contains("add-status_card")) {
       // I'm almost certain that ther eis a better implementation than what I have. My code is what one might refer to as apish, in that I've typed out hamlet by smacking my head against the keyboard.
       // Lo and behold, for this is simple and just uh, references the html, and yeah, it's pretty simple.
-      const container = button.closest(".buffs, .debuffs, .boons, .ailments");
+      const container = button.closest(".buffs, .debuffs, .boons, .ailments, .other");
       let type = "buff"; // fallback which I really hope is never necessary. I've seriously fucked up if this comes into play BUT! uh, that's it...
       // For the sake of creating the new item in the correct category, determine the type of status
       if (container?.classList.contains("buffs")) type = "buff";
       else if (container?.classList.contains("debuffs")) type = "debuff";
       else if (container?.classList.contains("boons")) type = "boon";
       else if (container?.classList.contains("ailments")) type = "ailment";
+      else if (container?.classList.contains("other")) type = "other";
       return this.actor.createEmbeddedDocuments("Item", [{name: game.i18n.localize("SOTC.ItemNew"),type: "status", img: "systems/sotc/assets/statuses/Default.png", system: {types: type}}]);
     }
 
@@ -534,7 +535,10 @@ export class SotCActorSheet extends ActorSheet {
 
     if (button.classList.contains("add-passive_card")) {
       const cls = getDocumentClass("Item");
-      return cls.create({name: game.i18n.localize("SOTC.ItemNew"), type: "passive"}, {parent: this.actor});
+      return this.actor.createEmbeddedDocuments("Item", [{name: game.i18n.localize("SOTC.ItemNew"),type: "passive", system: {type: "passive"}}]);
+    } else if (button.classList.contains("add-biography_card")) {
+      const cls = getDocumentClass("Item");
+      return this.actor.createEmbeddedDocuments("Item", [{name: game.i18n.localize("SOTC.ItemNew"),type: "passive", system: {type: "biography"}}]);
     }
 
     if (!item) {
