@@ -1,54 +1,53 @@
 {
-    "id": "sotc",
-    "title": "Stars of the City",
-    "description": "A system for playing Stars of the City, a Project Moon inspired TTRPG by Jakkafang & community.",
-    "url": "https://github.com/tsu-b-asa/sotc",
-    "manifest": "https://raw.githubusercontent.com/tsu-b-asa/sotc/master/system.json",
-    "download": "https://github.com/tsu-b-asa/sotc/releases/download/version-1.00/sotc-version-1.00.zip",
-    "authors": [
-        {
-        "name": "Tsubasa",
-        "discord": "tsubasa______"
-        }
-    ],
-    "version": 1.00,
-    "compatibility": {
-        "minimum": 11,
-        "verified": "11.315"
-    },
-    "esmodules": [
-        "module/sotc.js"
-    ],
-    "styles": [
-        "styles/sotc.css"
-    ], 
-    "packs": [
-        {
-        "name": "default-statuses",
-        "label": "Default Statuses",
-        "system": "sotc",
-        "path": "packs/default-statuses.db",
-        "type": "Item"
-        }
-    ],
-    "languages": [
-        {
-        "lang": "en",
-        "name": "English",
-        "path": "lang/en.json"
-        }
-    ],
-    "actors": {
-        "types": ["character"],
-        "default": "character"
-    },
-    "items": {
-        "types": ["skill", "status"],
-        "default": "skill"
-    },
-    "gridDistance": 5,
-    "gridUnits": "ft",
-    "primaryTokenAttribute": "Hit Points",
-    "secondaryTokenAttribute": "Stagger Resistance",
-    "background": "systems/sotc/assets/home_page.png"
+  "id": "sotc",
+  "title": "Stars of the City",
+  "description": "A system for playing Stars of the City, a Project Moon inspired TTRPG by Jakkafang and community.",
+  "url": "https://github.com/tsu-b-asa/sotc",
+  "manifest": "https://raw.githubusercontent.com/tsu-b-asa/sotc/master/system.json",
+  "download": "https://github.com/tsu-b-asa/sotc/releases/download/version-1.01/sotc-version-1.01.zip",
+  "authors": [
+    {
+      "name": "Tsubasa",
+      "discord": "tsubasa______",
+      "flags": {}
+    }
+  ],
+  "version": 1.01,
+  "compatibility": {
+    "minimum": 11,
+    "verified": "11.315"
+  },
+  "esmodules": [
+    "module/sotc.js"
+  ],
+  "styles": [
+    "styles/sotc.css"
+  ],
+  "packs": [
+    {
+      "name": "default-statuses",
+      "label": "Default Statuses",
+      "system": "sotc",
+      "path": "packs/default-statuses",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    }
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json",
+      "flags": {}
+    }
+  ],
+  "gridDistance": 5,
+  "gridUnits": "ft",
+  "primaryTokenAttribute": "Hit Points",
+  "secondaryTokenAttribute": "Stagger Resistance",
+  "background": "systems/sotc/assets/home_page.png"
 }

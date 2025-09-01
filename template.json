@@ -167,13 +167,14 @@
         },
         "status": {
             "name": "",
-            "types": ["buff", "debuff", "boon", "ailment"],
+            "types": ["buff", "debuff", "boon", "ailment", "other"],
             "count": 0,
             "condition": "",
             "target": "",
             "effect": ["Increase", "Decrease"],
             "special": "",
             "potency": 1,
+            "potency_flat": 0,
             "post_actives": [{
                 "operator": "maintain",
                 "variable": 0
