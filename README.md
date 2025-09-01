@@ -1,7 +1,6 @@
 # Formerly the Simple Worldbuilding System, modified for SotC
 
-A simple game system for Foundry VTT which allows for flexible definition of Actors and Items to assist with worldbuilding or for running games which do not have a more complete system implementation available.
-- Atropos
+A simple game system for Foundry VTT which allows for flexible definition of Actors and Items to assist with worldbuilding or for running games which do not have a more complete system implementation available. - Atropos
 
 Or that is how it was originally. It is now... very specialized. It's not exceptionally complicated at any given point. The code is all fairly straight forward.
 But still, it's not so mundane or generic anymore. This is targeted for the Stars of the City system made by JakkaFang, but could also be used for other
