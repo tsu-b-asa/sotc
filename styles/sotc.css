@@ -224,13 +224,6 @@
   color: inherit;
 }
 
-.sotc .char_abilities {
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  margin-top: 10px;
-  gap: 5px;
-}
 .sotc .char_ability {
   display: flex;
   flex-direction: row;
@@ -253,7 +246,8 @@
   resize: none;
 }
 
-.sotc .sheet_passives {
+.sotc .sheet_passives,
+.sotc .char_abilities {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
@@ -783,6 +777,8 @@
 .sotc .skill .right .dice_section {
   display: flex;
   flex-direction: column;
+  height: 365px;
+  overflow: scroll;
   width: 100%;
 }
 .sotc .skill .right .dice_section .dice-die {
@@ -931,7 +927,8 @@
 }
 
 .buffs_and_debuffs,
-.boons_and_ailments {
+.boons_and_ailments,
+.other_statuses {
   display: flex;
   padding: 8px;
   margin-left: 8px;
@@ -951,6 +948,13 @@
   align-items: center;
   margin-bottom: 8px;
   gap: 12px;
+}
+.other_statuses .other {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 .status_card {
   display: flex;
@@ -983,7 +987,6 @@
   font-weight: bold; 
   text-shadow: black 1px 0 10px, black 1px 0 10px;
   font-size: 16px;
-  height: 12px;
 }
 .status_buttons {
   margin-left: 8px;
@@ -1073,7 +1076,6 @@
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
-  height: 100px;
   margin-left: 12px;
   margin-right: 12px;
 }
