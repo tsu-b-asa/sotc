@@ -14,6 +14,7 @@
                         <option value="debuff" {{#if (eq systemData.types "debuff")}}selected{{/if}}>Debuff</option>
                         <option value="boon" {{#if (eq systemData.types "boon")}}selected{{/if}}>Boon</option>
                         <option value="ailment" {{#if (eq systemData.types "ailment")}}selected{{/if}}>Ailment</option>
+                        <option value="other" {{#if (eq systemData.types "other")}}selected{{/if}}>Other</option>
                     </select>
                 </div>
                 <div class="status_effect">
@@ -22,6 +23,7 @@
                         <option value="active" {{#if (eq systemData.condition "active")}}selected{{/if}}>On Trigger</option>
                         <option value="passive" {{#if (eq systemData.condition "passive")}}selected{{/if}}>Passively</option>
                         <option value="special" {{#if (eq systemData.condition "special")}}selected{{/if}}>Special</option>
+                        <!-- <option value="target_skill" {{#if (eq systemData.condition "target_skill")}}selected{{/if}}>Target Skill</option> -->
                     </select>
                     {{#if systemData.condition}}
                         {{#if (ne systemData.condition "special")}}
@@ -38,6 +40,7 @@
                                     <option value="" {{#if (eq systemData.target "")}}selected{{/if}}></option>
                                     <option value="damage affinities" {{#if (eq systemData.target "damage affinities")}}selected{{/if}}>Damage Affinity</option>
                                     <option value="stagger affinities" {{#if (eq systemData.target "stagger affinities")}}selected{{/if}}>Stagger Affinity</option>
+                                    <option value="all dice power" {{#if (eq systemData.target "all dice power")}}selected{{/if}}>All Dice Power</option>
                                     <option value="offensive power" {{#if (eq systemData.target "offensive power")}}selected{{/if}}>Offensive Dice Power</option>
                                     <option value="defensive power" {{#if (eq systemData.target "defensive power")}}selected{{/if}}>Defensive Dice Power</option>
                                     <option value="slash power" {{#if (eq systemData.target "slash power")}}selected{{/if}}>Slash Dice Power</option>
@@ -54,6 +57,8 @@
                                 {{/if}}
                             </select>
                             <span>by </span>
+                            <input type="number" name="system.potency_flat" value="{{systemData.potency_flat}}" style="width: 32px; text-align: center;"/>
+                            <span>flat, and by </span>
                             <input type="number" name="system.potency" value="{{systemData.potency}}" style="width: 32px; text-align: center;"/>
                             <span>per status count.</span>
                         {{else}}
