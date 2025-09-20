@@ -54,7 +54,9 @@
         <div class="tab summary" data-group="primary" data-tab="summary">
             <div class="sheet-header">
                 <div class="header-fields">
-                    <img class="profile-img" src="{{data.img}}" data-edit="img" title="{{data.name}}" height="100" width="100" />
+                    <div class="profile-img_div">
+                        <img class="profile-img" src="{{data.img}}" data-edit="img" title="{{data.name}}"/>
+                    </div>
                     <div class="resource_summaries">
                         <div class="resource_summary">
                             <div class="resource" style="color: #ff5a39;">  
@@ -152,12 +154,23 @@
                         </tr>
                     </table>
                     <hr style="border-color: #efc281; border-width: 1px;">
+                    <div class="misc_summary_data" style="font-weight: bold;"><span>Injuries:</span><input type="number" name="system.injuries" value="{{systemData.injuries}}"/></div>
+                    <div class="misc_summary_data" style="font-weight: bold;"><span>Anxieties:</span><input type="number" name="system.anxieties" value="{{systemData.anxieties}}"/></div>
+                    <hr style="border-color: #efc281; border-width: 1px;">
                     <div class="misc_summary_data" style="font-weight: bold;"><span>Level:</span><input type="number" name="system.level" value="{{systemData.level}}"/></div>
                     <hr style="border-color: #efc281; border-width: 1px;">
                     <div class="misc_summary_data" style="font-weight: bold;">Module Tracker</div>
                     <div class="misc_summary_data">Rank 1:<input type="number" name="system.modules.rank_1.used" value="{{systemData.modules.rank_1.used}}"/>/<input type="number" name="system.modules.rank_1.max" value="{{systemData.modules.rank_1.max}}"/></div>
                     <div class="misc_summary_data">Rank 2:<input type="number" name="system.modules.rank_2.used" value="{{systemData.modules.rank_2.used}}"/>/<input type="number" name="system.modules.rank_2.max" value="{{systemData.modules.rank_2.max}}"/></div>
                     <div class="misc_summary_data">Rank 3:<input type="number" name="system.modules.rank_3.used" value="{{systemData.modules.rank_3.used}}"/>/<input type="number" name="system.modules.rank_3.max" value="{{systemData.modules.rank_3.max}}"/></div>
+                    <hr style="border-color: #efc281; border-width: 1px;">
+                    <div class="misc_summary_data" style="font-weight: bold;">
+                        <span style="text-align: center;">Initiative Type: </span>
+                        <select name="system.initiative_type" style="color: inherit">
+                            <option style="color: black" value="player" {{#if (eq systemData.initiative_type "player")}}selected{{/if}}>Player</option>
+                            <option style="color: black" value="npc" {{#if (eq systemData.initiative_type "npc")}}selected{{/if}}>Non-Player</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="battle_abilities">
                     <input type="text" name="system.battle_ability_1.name" value="{{systemData.battle_ability_1.name}}" placeholder="Battle Ability 1" style="height:30px; width:100%"/>
