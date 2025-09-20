@@ -1,6 +1,6 @@
-# Formerly the Simple Worldbuilding System, modified for SotC
+# Stars of the City - SotC - FoundryVTT System
 
-A simple game system for Foundry VTT which allows for flexible definition of Actors and Items to assist with worldbuilding or for running games which do not have a more complete system implementation available. - Atropos
+"A simple game system for Foundry VTT which allows for flexible definition of Actors and Items to assist with worldbuilding or for running games which do not have a more complete system implementation available. - Atropos"
 
 Or that is how it was originally. It is now... very specialized. It's not exceptionally complicated at any given point. The code is all fairly straight forward.
 But still, it's not so mundane or generic anymore. This is targeted for the Stars of the City system made by JakkaFang, but could also be used for other
@@ -16,14 +16,17 @@ Feature Forecast
 	  hookup of dice modules as more than just text
 	- Actual activation of on use and after use as more than text
 	- Easy implementation of [check] tags
-	- Improval of dice and module readout when skills are printed, particularly to avoid some aggressive whitespace trimming <- Done this last part!
  - Implementation of blaze, maybe? The problem is that, even though I could nuke every npc with burn pretty easily I'd need to get an IFF system
- - Improved skill visuals for dice display, module tracking, other cosmetic modifications
- - Set up biography to use the same function as the passives <- Done!
+ - Improved skill visuals for dice display, module tracking, other cosmetic modifications <- Implemented, though not admirably
  - Maybe eventually make passive entries also be able to apply bonuses, like Ruina keypages would
  - Add level up mechanics for minor improvements
- - ADD LANGUAGE SUPPORT FOR REQUESTED LANGUAGES
+ - Add language support for any requested languages
  - Make the attributes rollable
+ - Rework statuses to use foundry default status system for module compatability
+ - The mess that is turn-end effects, like light regen or status effects. Bleh...
+ - Trackers, like for whether an ego passive is active or not
+ - Option to print-out status effects to chat (currently I encourage you to just have the description written separately as a passive saying something
+	like "Unit X applies Y effect with some skills. Y effect does Z."
 
 Requested Changes
  - Jakka: Add a category for status effects that is "Other" or "Special", for things that are none of the major 4
@@ -45,3 +48,10 @@ v1.01
  - Added an option for a status to target "All Dice Power" (status-sheet.html)
  - Changed the biography tab to use the same entry format as the passives tab, allowing for potentially infinite biography entries and printability (actor-sheet.js, actor-sheet.html)
  - Updated the formatting for the Passives (and now Biography) tab to better accommodate larger entries (sotc.css, actor-sheet.html)
+
+v1.02
+ - Provided substantial support for dice to be rolled individually or rerolled selectively
+ - Thanks to _twitch_ for pointing out an issue with combantant creation. Quite possibly my GOAT.
+ - Made the initiative tracker better
+ - Made passive status effects that target dice rolls apply automatically
+ - More stuff in the discord post that I cannot be bothered to rewrite here. It's 3am, man.

@@ -45,8 +45,7 @@
                     "dice_mod": 0
                 },
                 "modifiers": {
-                    "damage_affinity": 0,
-                    "stagger_affinity": 0,
+                    "all_mod": 0,
                     "off_mod": 0,
                     "def_mod": 0,
                     "slash_mod": 0,
@@ -55,6 +54,8 @@
                     "block_mod": 0,
                     "evade_mod": 0,
                     "speed_mod": 0,
+                    "damage_affinity": 0,
+                    "stagger_affinity": 0,
                     "speed_num_mod": 0,
                     "max_hp_mod": 0,
                     "max_stagger_mod": 0,
@@ -63,7 +64,8 @@
                 },
                 "emotion": 0,
                 "biography": "",
-                "mini_img": "systems/sotc/assets/statuses/BlackSilenceIcon.png"
+                "mini_img": "systems/sotc/assets/statuses/BlackSilenceIcon.png",
+                "initiative_type": "player"
             }
         },
         "character": {
@@ -120,7 +122,9 @@
                 "name": "",
                 "details": ""
             }],
-            "is_player": 1
+            "is_player": 1,
+            "injuries": 0,
+            "anxieties": 0
         },
         "npc": {
             "templates": ["base"],
