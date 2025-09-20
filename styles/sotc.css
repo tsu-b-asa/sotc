@@ -118,12 +118,20 @@
   justify-content: flex-start;
   margin-bottom: 10px;
 }
-.sotc .sheet-header .header-fields .profile-img {
-  flex: 0 0 175px;
+.sotc .sheet-header .header-fields .profile-img_div {
+  width: 175px;
   height: 175px;
   margin-left: 10px;
   margin-right: 10px;
   margin-bottom: 10px;
+  display: flex;
+  overflow-y: hidden;
+}
+.sotc .sheet-header .header-fields .profile-img {
+  width: 100%;
+  display: block;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 .sotc .sheet-header .header-fields .resource_summaries {
   flex-grow: 1;
@@ -546,6 +554,7 @@
   display: flex;
   flex-direction: row;
   font-family: "skill_font", sans-serif;
+  height: 100%;
 }
 .sotc .skill input {
   font-family: "skill_font", sans-serif;
@@ -775,11 +784,10 @@
   font-family: "alt_skill_font", sans-serif;
 }
 .sotc .skill .right .dice_section {
-  display: flex;
   flex-direction: column;
-  height: 365px;
-  overflow: scroll;
+  overflow: auto;
   width: 100%;
+  margin-bottom: 10%;
 }
 .sotc .skill .right .dice_section .dice-die {
   display: flex;
