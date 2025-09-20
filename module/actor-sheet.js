@@ -200,13 +200,15 @@ export class SotCActorSheet extends ActorSheet {
       buttons: {
         declare: {
           icon: '<i class="fas fa-exclamation-circle"></i>',
-          label: "Declare",
+          label: "Reveal",
           callback: async html => {
             const diceArray = item.system.dice?.die ?? {};
             const dice = Array.isArray(diceArray) ? diceArray : Object.values(diceArray);
 
             // Optional sections based on conditions
             const skillModules = item.system.skill_modules?.mods;
+            const light_cost = item.system.light_cost;
+            const light_costLine = `<p><strong>Light Cost:</strong> ${light_cost}</p>`;
             const weight = item.system.weight;
             const weightLine = weight > 1 ? `<p><strong>Attack Weight:</strong> ${weight}</p>` : "";
             const skillModulesLine = skillModules ? `<div class="skill-modules" style="white-space: pre-wrap;">${skillModules}</div>` : "";
@@ -223,7 +225,7 @@ export class SotCActorSheet extends ActorSheet {
               return `
                 <div style="margin-left: 5px; margin-bottom: 5px;">
                   <img src="${icon}" alt="${die.type}" title="${die.type}" style="height: 30px; width: 30px; vertical-align: middle; border: none;">
-                  <span class="${colorClass}" style="margin-left: 5px; vertical-align: middle; font-size: 16px; text-shadow: black 0.5px 0.5px 1px;"><strong>${formula}</strong></span>
+                  <span class="${colorClass}" style="margin-left: 5px; vertical-align: middle; font-size: 16px; text-shadow: black 0.5px 0.5px"><strong>${formula}</strong></span>
                   ${moduleLine ? `<br>${moduleLine}` : ""}
                 </div>
               `;
@@ -232,6 +234,7 @@ export class SotCActorSheet extends ActorSheet {
             const messageContent = `
               <div class="skill-declaration">
                 <h2>${item.name}</h2>
+                ${light_costLine}
                 ${weightLine}
                 ${skillModulesLine}
                 <p><strong>Dice:</strong></p>
@@ -261,6 +264,7 @@ export class SotCActorSheet extends ActorSheet {
               const mod = parseInt($(input).find(`input[name="mod-${i}"]`).val()) || 0;
               const paralysis = $(input).find(`input[name="paralysis-${i}"]`).prop("checked");
               const poise = $(input).find(`input[name="poise-${i}"]`).prop("checked");
+              let status_mod = 0;
 
               // Parses any die of the format XdY+Z where Z can be any number of +/- terms
               const match = die.formula.match(/^\s*(\d+)\s*d\s*(\d+)((?:\s*[+-]\s*\d+)*)\s*$/);
@@ -277,28 +281,53 @@ export class SotCActorSheet extends ActorSheet {
               const numDice = parseInt(match[1]);
               const dieSize = parseInt(match[2]);
               const modifierString = match[3] || "";
-              // Decypher the  string into individual parts so that MOST forms of equation won't fucking explode. If people
+              // Decypher the  string into individual parts so that MOST forms of equation won't fucking explode. If people <- apparently I ended this sentence right here. What?
               const baseMod = modifierString
                 .replace(/\s+/g, "")
                 .split(/(?=[+-])/)
                 .filter(s => s.length)
                 .reduce((sum, str) => sum + parseInt(str), 0);
 
+              // Apply modifiers from status effects
+              status_mod += this.actor.system.modifiers.all_mod;
+
+              if (["slash", "pierce", "blunt", "counter-slash", "counter-pierce", "counter-blunt"].includes(die.type)) {
+                status_mod += this.actor.system.modifiers.off_mod;
+              }
+              if (["block", "evade", "counter-block", "counter-evade"].includes(die.type)) {
+                status_mod += this.actor.system.modifiers.def_mod;
+              }
+              if (["slash", "counter-slash"].includes(die.type)) {
+                status_mod += this.actor.system.modifiers.slash_mod;
+              }
+              else if (["pierce", "counter-pierce"].includes(die.type)) {
+                status_mod += this.actor.system.modifiers.pierce_mod;
+              }
+              else if (["blunt", "counter-blunt"].includes(die.type)) {
+                status_mod += this.actor.system.modifiers.blunt_mod;
+              }
+              else if (["block", "counter-block"].includes(die.type)) {
+                status_mod += this.actor.system.modifiers.block_mod;
+              }
+              else if (["evade", "counter-evade"].includes(die.type)) {
+                status_mod += this.actor.system.modifiers.evade_mod;
+              }
+
               let roll;
               let formulaForDisplay;
 
               // Currently, these are the only really non-module types of status effects. Maybe at some point I can make it apply more complicated specified logics
               if (paralysis) {
-                let total = numDice * 1 + baseMod + mod;
+                let total = numDice * 1 + baseMod + mod + status_mod;
                 // Stylistically show the paralysis or poise when its rolled.
                 formulaForDisplay = `<img src="systems/sotc/assets/statuses/Paralyze.png" title="Paralyze" style="height: 20px; width: 20px; vertical-align: middle; margin-right: 3px; border: none; filter: drop-shadow(1px 1px 2px black)">(${numDice}d${dieSize}) + ${baseMod}`;
                 roll = await new Roll(`${total}`).roll({ async: true });
               } else if (poise) {
-                let total = numDice * dieSize + baseMod + mod;
+                let total = numDice * dieSize + baseMod + mod + status_mod;
                 formulaForDisplay = `<img src="systems/sotc/assets/statuses/Poise.png" title="Poise" style="height: 20px; width: 20px; vertical-align: middle; margin-right: 3px; border: none; filter: drop-shadow(1px 1px 2px black)">(${numDice}d${dieSize}) + ${baseMod}`;
                 roll = await new Roll(`${total}`).roll({ async: true });
               } else {
-                let formula = `${numDice}d${dieSize} + ${baseMod} + ${mod}`;
+                let formula = `${numDice}d${dieSize} + ${baseMod} + ${mod} + ${status_mod}`;
                 // I've had it suggested that maybe this shouldn't be shown at all. I might take that into consideration eventually
                 formulaForDisplay = `${numDice}d${dieSize} + ${baseMod}`;
                 roll = await new Roll(formula).roll({ async: true });
@@ -309,20 +338,28 @@ export class SotCActorSheet extends ActorSheet {
               } else if (mod < 0) {
                 formulaForDisplay = `${formulaForDisplay} - ${-mod}`;
               }
+              if (status_mod > 0) {
+                formulaForDisplay = `${formulaForDisplay} + ${status_mod}`;
+              } else if (status_mod < 0) {
+                formulaForDisplay = `${formulaForDisplay} - ${-status_mod}`;
+              }
               formulaForDisplay = `${formulaForDisplay} = ${roll.total}`;
               
-              results.push({ die, roll, formulaForDisplay });
+              results.push({die, roll, formulaForDisplay, mod, status_mod});
             }
 
             // Optional info: weight, modules
             const skillModules = item.system.skill_modules?.mods;
+            const light_cost = item.system.light_cost;
+            const light_costLine = `<p><strong>Light Cost:</strong> ${light_cost}</p>`;
+
             const weight = item.system.weight;
 
             const weightLine = weight > 1 ? `<p><strong>Attack Weight:</strong> ${weight}</p>` : "";
             const skillModulesLine = skillModules ? `<div class="skill-modules" style="white-space: pre-wrap;">${skillModules}</div>` : "";
 
             // Dice display
-            const diceSummaries = results.map(({ die, roll, formulaForDisplay }) => {
+            const diceSummaries = results.map(({ die, roll, formulaForDisplay, mod, status_mod }) => {
               const icon = `systems/sotc/assets/dice types/${die.type}.png`;
               const colorClass = `die-color-${die.type}`;
               const modules = Object.values(die.mods ?? {});
@@ -333,7 +370,21 @@ export class SotCActorSheet extends ActorSheet {
               return `
                 <div style="margin-left: 5px; margin-bottom: 5px;">
                   <img src="${icon}" alt="${die.type}" title="${die.type}" style="height: 30px; width: 30px; vertical-align: middle; border: none;">
-                  <span class="${colorClass}" style="margin-left: 5px; vertical-align: middle; font-size: 16px; text-shadow: black 0.5px 0.5px 1px;"><strong>${formulaForDisplay}</strong></span>
+                  <span class="${colorClass}" style="margin-left: 5px; vertical-align: middle; font-size: 16px;">
+                    <strong style="text-shadow: black 0.5px 0.5px">${formulaForDisplay}</strong>
+                    <a class="reroll-die" data-formula="${die.formula}" data-type="${die.type}"  title="Reroll this die"
+                      data-actor-id="${this.actor.id}"
+                      data-formula="${die.formula}"
+                      data-mod="${mod}"
+                      data-statmod="${status_mod}"
+                      data-type="${die.type}"
+                      data-color="die-color-${die.type}"
+                      data-modules='${JSON.stringify(Object.values(die.mods ?? {}))}'
+                      data-itemname="${item.name}"
+                      style="width: 16px; height: 16px; color: black; margin-left: 8px;">
+                      <i class="fas fa-rotate-left"></i>
+                    </a>
+                  </span>
                   ${moduleLine ? `<br>${moduleLine}` : ""}
                 </div>
               `;
@@ -342,6 +393,7 @@ export class SotCActorSheet extends ActorSheet {
             const flavor = `
               <div class="skill-roll-summary">
                 <h2>${item.name}</h2>
+                ${light_costLine}
                 ${weightLine}
                 ${skillModulesLine}
                 <p><strong>Dice Rolled:</strong></p>
@@ -373,12 +425,46 @@ export class SotCActorSheet extends ActorSheet {
               }
             });
 
+            await (async () => {
+              const actor = this.actor;
+              if (actor) {
+                const updates = {};
+
+                // Light cost
+                const lightCost = item.system.light_cost ?? 0;
+                if (lightCost > 0) {
+                  const currentLight = getProperty(actor.system, "light.value") ?? 0;
+                  updates["system.light.value"] = Math.max(currentLight - lightCost, 0);
+                }
+
+                // Emotion cost
+                const emotionCost = item.system.emotion_cost ?? 0;
+                if (emotionCost > 0) {
+                  const currentEmotion = getProperty(actor.system, "emotion") ?? 0;
+                  updates["system.emotion"] = Math.max(currentEmotion - emotionCost, 0);
+                }
+
+                // Limited uses
+                const maxUses = item.system.limit?.max ?? 0;
+                if (maxUses > 0) {
+                  const currentUses = item.system.limit?.value ?? maxUses;
+                  const newUses = Math.max(currentUses - 1, 0);
+                  await item.update({ "system.limit.value": newUses });
+                }
+
+                if (Object.keys(updates).length > 0) {
+                  await actor.update(updates);
+                }
+              }
+            })();
+
             const chatMessage = await ChatMessage.create({
               speaker: ChatMessage.getSpeaker({ actor: this.actor }),
               flavor,
               rolls: results.map(r => r.roll),
               type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-              rollMode: game.settings.get("core", "rollMode")
+              rollMode: game.settings.get("core", "rollMode"),
+              sound: CONFIG.sounds.dice
             });
 
             chatMessageId = chatMessage.id;
@@ -393,7 +479,8 @@ export class SotCActorSheet extends ActorSheet {
 
       // This handles our paralysis and poise icons so that those status effects can be applied
       render: html => {
-        html[0].querySelectorAll(".toggle_icon").forEach(icon => {
+        const root = html[0];
+        root.querySelectorAll(".toggle_icon").forEach(icon => {
           icon.addEventListener("click", () => {
             const index = icon.dataset.index;
             const type = icon.dataset.type;
@@ -418,6 +505,133 @@ export class SotCActorSheet extends ActorSheet {
               currentInput.checked = true;
               currentIcon.classList.add("selected");
             }
+          });
+        });
+
+        root.querySelectorAll(".dialog_individual_roll-button").forEach(btn => {
+          btn.addEventListener("click", async ev => {
+            ev.preventDefault();
+            const i = parseInt(btn.dataset.index);
+            const diceArray = item.system.dice?.die ?? {};
+            const dice = Array.isArray(diceArray) ? diceArray : Object.values(diceArray);
+            const die = dice[i];
+
+            const input = root.querySelector(`[data-die-index="${i}"]`);
+            const mod = parseInt(input.querySelector(`input[name="mod-${i}"]`)?.value) || 0;
+            const paralysis = input.querySelector(`input[name="paralysis-${i}"]`)?.checked;
+            const poise = input.querySelector(`input[name="poise-${i}"]`)?.checked;
+            let status_mod = 0;
+
+            // parse formula
+            const match = die.formula.match(/^\s*(\d+)\s*d\s*(\d+)((?:\s*[+-]\s*\d+)*)\s*$/);
+            if (!match) {
+              return ui.notifications.error(`Invalid formula: ${die.formula}`);
+            }
+
+            const numDice = parseInt(match[1]);
+            const dieSize = parseInt(match[2]);
+            const modifierString = match[3] || "";
+            const baseMod = modifierString
+              .replace(/\s+/g, "")
+              .split(/(?=[+-])/)
+              .filter(s => s.length)
+              .reduce((sum, str) => sum + parseInt(str), 0);
+
+            // Apply modifiers from status effects
+            status_mod += this.actor.system.modifiers.all_mod;
+
+            if (["slash", "pierce", "blunt", "counter-slash", "counter-pierce", "counter-blunt"].includes(die.type)) {
+              status_mod += this.actor.system.modifiers.off_mod;
+            }
+            if (["block", "evade", "counter-block", "counter-evade"].includes(die.type)) {
+              status_mod += this.actor.system.modifiers.def_mod;
+            }
+            if (["slash", "counter-slash"].includes(die.type)) {
+              status_mod += this.actor.system.modifiers.slash_mod;
+            }
+            else if (["pierce", "counter-pierce"].includes(die.type)) {
+              status_mod += this.actor.system.modifiers.pierce_mod;
+            }
+            else if (["blunt", "counter-blunt"].includes(die.type)) {
+              status_mod += this.actor.system.modifiers.blunt_mod;
+            }
+            else if (["block", "counter-block"].includes(die.type)) {
+              status_mod += this.actor.system.modifiers.block_mod;
+            }
+            else if (["evade", "counter-evade"].includes(die.type)) {
+              status_mod += this.actor.system.modifiers.evade_mod;
+            }
+              
+            let roll;
+            let formulaForDisplay;
+
+            if (paralysis) {
+              let total = numDice * 1 + baseMod + mod + status_mod;
+              formulaForDisplay = `<img src="systems/sotc/assets/statuses/Paralyze.png" title="Paralyze" style="height: 20px; width: 20px; vertical-align: middle; margin-right: 3px; filter: drop-shadow(1px 1px 2px black); border: none;">(${numDice}d${dieSize}) + ${baseMod}`;
+              roll = await new Roll(`${total}`).roll({ async: true });
+            } else if (poise) {
+              let total = numDice * dieSize + baseMod + mod + status_mod;
+              formulaForDisplay = `<img src="systems/sotc/assets/statuses/Poise.png" title="Poise" style="height: 20px; width: 20px; vertical-align: middle; margin-right: 3px; filter: drop-shadow(1px 1px 2px black); border: none;">(${numDice}d${dieSize}) + ${baseMod}`;
+              roll = await new Roll(`${total}`).roll({ async: true });
+            } else {
+              let formula = `${numDice}d${dieSize} + ${baseMod} + ${mod} + ${status_mod}`;
+              formulaForDisplay = `${numDice}d${dieSize} + ${baseMod}`;
+              roll = await new Roll(formula).roll({ async: true });
+            }
+
+            if (mod > 0) {
+              formulaForDisplay = `${formulaForDisplay} + ${mod}`;
+            } else if (mod < 0) {
+              formulaForDisplay = `${formulaForDisplay} - ${-mod}`;
+            }
+            if (status_mod > 0) {
+              formulaForDisplay = `${formulaForDisplay} + ${status_mod}`;
+            } else if (status_mod < 0) {
+              formulaForDisplay = `${formulaForDisplay} - ${-status_mod}`;
+            }
+            formulaForDisplay = `${formulaForDisplay} = ${roll.total}`;
+
+            // Module display
+            const modules = Object.values(die.mods ?? {});
+            const moduleLine = modules.length
+              ? `<div style="margin-top: 4px; font-size: 12px;"><em>${modules.map(m => `<div style="margin-left: 5px;">• ${m}</div>`).join("")}</em></div>`
+              : "";
+
+            const icon = `systems/sotc/assets/dice types/${die.type}.png`;
+            const colorClass = `die-color-${die.type}`;
+            const flavor = `
+              <div class="skill-die-roll">
+                <h3>${item.name}</h3>
+                <div style="margin-left:5px; margin-bottom:5px;">
+                  <img src="${icon}" alt="${die.type}" style="height: 30px; width: 30px; vertical-align: middle; border: none;">
+                  <span class="${colorClass}" style="margin-left: 5px; vertical-align: middle; font-size: 16px;">
+                    <strong style="text-shadow: black 0.5px 0.5px">${formulaForDisplay}</strong>
+                    <a class="reroll-die" data-formula="${die.formula}" data-type="${die.type}"  title="Reroll this die"
+                      data-actor-id="${this.actor.id}"
+                      data-formula="${die.formula}"
+                      data-mod=${mod}
+                      data-statmod="${status_mod}"
+                      data-type="${die.type}"
+                      data-color="die-color-${die.type}"
+                      data-modules='${JSON.stringify(Object.values(die.mods ?? {}))}'
+                      data-itemname="${item.name}"
+                      style="width: 16px; height: 16px; color: black; margin-left: 8px;">
+                      <i class="fas fa-rotate-left"></i>
+                    </a>
+                  </span>
+                  ${moduleLine ? `<br>${moduleLine}` : ""}
+                </div>
+              </div>
+            `;
+
+            await roll.toMessage({
+              speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+              flavor: flavor,
+              rolls: [roll],
+              type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+              rollMode: game.settings.get("core", "rollMode"),
+              sound: CONFIG.sounds.dice
+            });
           });
         });
       }

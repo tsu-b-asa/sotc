@@ -189,32 +189,99 @@ export class SotCSkillSheet extends ItemSheet {
   }
 
   // How we roll the individual dice on a skill, for the purpose of recycling dice mainly or just for rerolling them. This provides no dialog box for power modification currently but should in the future
-  async _onRollSkillDie(event) {
-    event.preventDefault();
-    const index = Number(event.currentTarget.dataset.index);
-    const die = this.item.system.dice.die[index];
+async _onRollSkillDie(event) {
+  event.preventDefault();
+  const index = Number(event.currentTarget.dataset.index);
+  const die = this.item.system.dice.die[index];
 
-    if (!die || !die.formula) {
-      ui.notifications.warn("No valid formula found for this die.");
-      return;
-    }
-
-    try {
-    const icon = `systems/sotc/assets/dice types/${die.type}.png`;
-    const flavor = `<img src="${icon}" alt="${die.type}" title="${die.type}" style="width: auto; height: 36px; vertical-align: middle; border: none;"> ${die.formula}`;
-
-      const roll = new Roll(die.formula);
-      await roll.roll({ async: true });
-
-      roll.toMessage({
-        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        flavor: flavor
-      });
-    } catch (err) {
-      console.error("Error rolling die:", err);
-      ui.notifications.error("Invalid formula. Please check your input.");
-    }
+  if (!die || !die.formula) {
+    return ui.notifications.warn("No valid formula found for this die.");
   }
+
+  try {
+    let status_mod = 0;
+    // Apply modifiers from status effects
+    status_mod += this.actor.system.modifiers.all_mod;
+
+    if (["slash", "pierce", "blunt", "counter-slash", "counter-pierce", "counter-blunt"].includes(die.type)) {
+      status_mod += this.actor.system.modifiers.off_mod;
+    }
+    if (["block", "evade", "counter-block", "counter-evade"].includes(die.type)) {
+      status_mod += this.actor.system.modifiers.def_mod;
+    }
+    if (["slash", "counter-slash"].includes(die.type)) {
+      status_mod += this.actor.system.modifiers.slash_mod;
+    }
+    else if (["pierce", "counter-pierce"].includes(die.type)) {
+      status_mod += this.actor.system.modifiers.pierce_mod;
+    }
+    else if (["blunt", "counter-blunt"].includes(die.type)) {
+      status_mod += this.actor.system.modifiers.blunt_mod;
+    }
+    else if (["block", "counter-block"].includes(die.type)) {
+      status_mod += this.actor.system.modifiers.block_mod;
+    }
+    else if (["evade", "counter-evade"].includes(die.type)) {
+      status_mod += this.actor.system.modifiers.evade_mod;
+    }
+
+    let roll_formula = die.formula;
+
+    if (status_mod > 0) {
+      roll_formula = `${roll_formula} + ${status_mod}`;
+    } else if (status_mod < 0) {
+      roll_formula = `${roll_formula} - ${-status_mod}`;
+    }
+    const roll = await new Roll(roll_formula).roll({ async: true });
+    roll_formula = `${roll_formula} = ${roll.total}`;
+
+
+
+    const icon = `systems/sotc/assets/dice types/${die.type}.png`;
+    const colorClass = `die-color-${die.type}`;
+    const modules = Object.values(die.mods ?? {});
+    const moduleLine = modules.length
+      ? `<div style="margin-top: 4px; font-size: 12px;"><em>${modules.map(m => `<div style="margin-left: 5px;">• ${m}</div>`).join("")}</em></div>`
+      : "";
+    
+
+
+
+    const flavor = `
+      <div class="skill-die-roll">
+        <h3>${this.item.name}</h3>
+        <div style="margin-left: 5px; margin-bottom: 5px;">
+          <img src="${icon}" alt="${die.type}" title="${die.type}" style="height: 30px; width: 30px; vertical-align: middle; border: none;">
+          <span class="${colorClass}" style="margin-left: 5px; vertical-align: middle; font-size: 16px;">
+            <strong style="text-shadow: black 0.5px 0.5px">${roll_formula}</strong>
+              <a class="reroll-die" data-formula="${die.formula}" data-type="${die.type}"  title="Reroll this die"
+                data-formula="${die.formula}"
+                data-mod="0"
+                data-statmod="${status_mod}"
+                data-type="${die.type}"
+                data-color="die-color-${die.type}"
+                data-modules='${JSON.stringify(Object.values(die.mods ?? {}))}'
+                data-itemname="${this.item.name}"
+                style="width: 16px; height: 16px; color: black; margin-left: 8px;">
+                <i class="fas fa-rotate-left"></i>
+              </a>
+          </span>
+          ${moduleLine ? `<br>${moduleLine}` : ""}
+        </div>
+      </div>
+    `;
+
+    await roll.toMessage({
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      flavor,
+      sound: CONFIG.sounds.dice
+    });
+
+  } catch (err) {
+    console.error("Error rolling die:", err);
+    ui.notifications.error("Invalid formula. Please check your input.");
+  }
+}
 
   /* -------------------------------------------- */
 

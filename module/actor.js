@@ -20,6 +20,42 @@ export class SotCActor extends Actor {
     this.system.groups = this.system.groups || {};
     this.system.attributes = this.system.attributes || {};
     EntitySheetHelper.clampResourceValues(this.system.attributes);
+  
+    const system = this.system;
+    const modifiers = {
+      all_mod: 0,
+      off_mod: 0,
+      def_mod: 0,
+      slash_mod: 0,
+      pierce_mod: 0,
+      blunt_mod: 0,
+      block_mod: 0,
+      evade_mod: 0,
+      speed_mod: 0
+    };
+
+    const statuses = this.items.filter(i => i.type === "status" && (i.system.condition === "passive") && (i.system.count > 0));
+
+    for (const status of statuses) {
+      const { effect, target, potency_flat = 0, potency = 0, count = 0 } = status.system;
+      const sign = effect === "Increase" ? 1 : -1;
+      const bonus = (potency_flat + potency * count) * sign;
+
+      switch (target) {
+        case "all dice power": modifiers.all_mod += bonus; break;
+        case "offensive power": modifiers.off_mod += bonus; break;
+        case "defensive power": modifiers.def_mod += bonus; break;
+        case "slash power": modifiers.slash_mod += bonus; break;
+        case "pierce power": modifiers.pierce_mod += bonus; break;
+        case "blunt power": modifiers.blunt_mod += bonus; break;
+        case "block power": modifiers.block_mod += bonus; break;
+        case "evade power": modifiers.evade_mod += bonus; break;
+        case "speed": modifiers.speed_mod += bonus; break;
+      }
+    }
+
+    // Store modifiers in system
+    system.modifiers = modifiers;
   }
 
   /* -------------------------------------------- */

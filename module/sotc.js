@@ -44,23 +44,37 @@ Hooks.once("init", async function() {
 
       const updates = [];
       for (let c of combatants) {
-        const actorFormula = c.actor?.system?.speed_dice?.dice_size;
+        const actor_formula = c.actor?.system?.speed_dice?.dice_size;
+        const actor_type = c.actor?.system?.initiative_type;
+        const init_mod = c.actor?.system?.modifiers.speed_mod ?? 0;
+        let total_formula;
+        if (init_mod > 0) {
+          total_formula = `${actor_formula}+${init_mod}`;
+        } 
+        else if (init_mod < 0) {
+          total_formula = `${actor_formula}-${-init_mod}`;
+        }
         // const isSpeedDie = c.flags?.sotc?.isSpeedDieClone; <- Not Needed in the current version 
-        const finalFormula = (actorFormula && Roll.validate(actorFormula))
-          ? actorFormula
+        const final_formula = (total_formula && Roll.validate(total_formula))
+          ? total_formula
           : formula || CONFIG.Combat.initiative.formula; // This is our given failsafe
 
-        const roll = await new Roll(finalFormula).roll({ async: true });
-        updates.push({ _id: c.id, initiative: roll.total });
+        const roll = await new Roll(final_formula).roll({ async: true });
+        let final_init = Math.max(1, roll.total);
+        if (actor_type === "player") {
+          final_init = final_init+0.01
+        }
+
+        updates.push({ _id: c.id, initiative: final_init });
 
         // Post chat message
         await roll.toMessage({
           speaker: ChatMessage.getSpeaker({ actor: c.actor }),
-          flavor: `${c.name} rolls initiative (${finalFormula})`
+          flavor: `${c.name} rolls initiative (${roll.total - init_mod} → ${final_init})`,
         }, messageOptions);
       }
 
-      // Update initiatives and optionally sort
+      // Update initiatives
       await this.updateEmbeddedDocuments("Combatant", updates);
       if (updateTurn) this.update({ turn: this.turns.findIndex(t => t.initiative !== null) });
       return this;
@@ -84,14 +98,16 @@ Hooks.once("init", async function() {
   // More work, specifically for our Actor sheets and Item sheets.
   // PLEASE come back and localize this later. We should ideally make this work for like, Russian, Korean, Chinese, and Japanese if we're serious about it.
   CONFIG.Actor.types = ["character"]; // No NPC Yet!!!!!!
-  CONFIG.Item.types = ["skill", "status"];
+  CONFIG.Item.types = ["skill", "ego", "status", "passive"];
   CONFIG.Actor.typeLabels = {
     character: "Character",
   //  npc: "NPC"  <- Still Not Yet!!!!!!!!!!
   };
   CONFIG.Item.typeLabels = {
     skill: "Skill",
-    status: "Status"
+    ego: "EGO",
+    status: "Status",
+    passive: "Passive"
   };
 
   // Register sheet application classes
@@ -219,7 +235,6 @@ Hooks.on("renderCombatTracker", (app, html, data) => {
   for (const li of html[0].querySelectorAll(".combatant")) {
     const combatantId = li.dataset.combatantId;
     const combatant = game.combat.combatants.get(combatantId);
-    if (!combatant?.isOwner) continue;
 
     const isUsed = combatant.flags?.sotc?.used;
 
@@ -227,7 +242,6 @@ Hooks.on("renderCombatTracker", (app, html, data) => {
     const controls = li.querySelector(".combatant-controls");
     if (!controls) continue;
 
-    // Create a new control <a> element
     const usedButton = document.createElement("a");
     usedButton.classList.add("combatant-control");
     usedButton.dataset.control = "toggleUsedSpeedDie";
@@ -235,7 +249,7 @@ Hooks.on("renderCombatTracker", (app, html, data) => {
     usedButton.setAttribute("aria-label", "Toggle Speed Dice as Used/Unused");
     usedButton.setAttribute("role", "button");
 
-    // Add icon based on used state
+    // Icon reflects use state yippeeeeee
     const icon = document.createElement("img");
     icon.src = isUsed ? "systems/sotc/assets/icons/used.png" : "systems/sotc/assets/icons/unused.png";
     icon.alt = "Used Speed Die";
@@ -244,20 +258,24 @@ Hooks.on("renderCombatTracker", (app, html, data) => {
     icon.classList.add("used_and_unused_icons");
     usedButton.appendChild(icon);
 
-    // Add click behavior
-    usedButton.addEventListener("click", async (ev) => {
-      ev.preventDefault();
-      const newUsed = !isUsed;
-      await combatant.setFlag("sotc", "used", newUsed);
-    });
+    if (combatant.isOwner || game.user.isGM) {
+      usedButton.addEventListener("click", async (ev) => {
+        ev.preventDefault();
+        const newUsed = !isUsed;
+        await combatant.setFlag("sotc", "used", newUsed);
+      });
+    } else {
+      usedButton.style.pointerEvents = "none";
+      usedButton.style.opacity = "0.0";
+    }
 
-    // Append the button to the controls
+    // Append the button to the controls, which looks only a little jank
     controls.appendChild(usedButton);
 
-    // Visually mark the row as used
+    // Visually mark the row as used by...
     li.classList.toggle("used-speed-die", isUsed);
 
-    // Apply greying-out if used
+    // ... greying it out
     if (isUsed) {
       li.style.opacity = "0.4";
     } else {
@@ -268,7 +286,14 @@ Hooks.on("renderCombatTracker", (app, html, data) => {
 
 Hooks.on("createCombatant", async (combatant, options, userId) => {
   // If someone other than the gm runs the code (as it's run client side), then things get messy and we get duplicate entries
-  if (!game.user.isGM) return;
+  // As pointed out to me by _twitch_ my former fix of "if (!game.user.isGM) return;" did not work, because we could have assistant GMs in the mix
+  // Now, we let each machine conduct this step, checking to see if they made the combatant. If not, they do nothing, and if so they make the duplicates!
+  if (typeof userId === "string") {
+    if (userId !== game.user.id) return;
+  } else {
+    // Fallback, will have the same issue for multiple connected machines
+    if (!game.user.isGM) return;
+  }
 
   if (combatant.flags?.sotc?.isSpeedDieClone) return;
   const actor = combatant.actor;
@@ -283,7 +308,7 @@ Hooks.on("createCombatant", async (combatant, options, userId) => {
       tokenId: combatant.tokenId,
       hidden: false,
       initiative: null,
-      name: `${actor.name} #${i + 1}`,
+      name: `${combatant.name} #${i + 1}`,
       flags: {
         sotc: {
           isSpeedDieClone: true,
@@ -298,11 +323,15 @@ Hooks.on("deleteCombatant", async (combatant, options, userId) => {
   console.log("Combatant deleted", combatant);
   const combat = combatant.parent;
   const actorId = combatant.actorId;
-  if (!actorId) return;
+  const tokenId = combatant.tokenId;
+  if (!actorId || !tokenId) return;
 
-  // Remove all other combatants linked to the same actor and flagged as clones
+  // Remove only other combatants that are clones of THIS token
   const toRemove = combat.combatants.filter(c =>
-    c.actorId === actorId && c.id !== combatant.id && c.getFlag("sotc", "isSpeedDieClone")
+    c.actorId === actorId &&
+    c.tokenId === tokenId &&
+    c.id !== combatant.id &&
+    c.getFlag("sotc", "isSpeedDieClone")
   );
 
   if (toRemove.length > 0) {
@@ -311,16 +340,23 @@ Hooks.on("deleteCombatant", async (combatant, options, userId) => {
 });
 
 // Now we take care of our initiative, compensating for the dice being of variable size and power
+// I can't remember, do I even use this anywhere?
 Hooks.on("preRollInitiative", (combat, combatants, rollOptions) => {
   for (let combatant of combatants) {
     const actor = combatant.actor;
-    // Not Needed -> const isSpeedDie = combatant.flags?.sotc?.isSpeedDieClone;
+    // Not Needed? -> const isSpeedDie = combatant.flags?.sotc?.isSpeedDieClone;
     const actorFormula = actor?.system?.speed_dice?.dice_size;
+    const actorType = actor?.system?.initiative_type
 
     // Only override formula if valid and a speed die clone
     if (actorFormula && Roll.validate(actorFormula)) {
       console.log(`Overriding initiative roll for ${combatant.name} with formula: ${actorFormula}`);
-      rollOptions.formula = actorFormula;
+      if (actorType === "player") {
+        const total = actorFormula + 0.01
+        rollOptions.formula = total
+      } else {
+        rollOptions.formula = actorFormula
+      }
     }
   }
 });
@@ -372,12 +408,12 @@ Hooks.once("ready", () => {
     const actor = this.actor;
     if (!actor) return;
 
-    // Grab all status items with count > 0
+    // All status items with count > 0
     const statuses = actor.items.filter(i => i.type === "status" && (i.system?.count ?? 0) > 0);
     if (!statuses.length) return;
 
-    // Layout constants (tweak to taste)
-    const iconSize = 30;
+    const gridSize = canvas.grid.size; 
+    const iconSize = Math.floor(gridSize * 0.24);
     const pad = 2;
     const wrapHeight = this.h; // wrap to next column if we run out of vertical space
 
@@ -486,4 +522,78 @@ Hooks.on("createActor", async (actor, options, userId) => {
   await actor.createEmbeddedDocuments("Item", items.filter(item =>
     !actor.items.some(ai => ai.name === item.name)
   ));
+});
+
+Hooks.on("renderChatMessage", (message, html) => {
+  html.find(".reroll-die").on("click", async ev => {
+    ev.preventDefault();
+    const btn = ev.currentTarget;
+
+    const item_name = btn.dataset.itemname || "Unknown Item";
+    const formula = btn.dataset.formula;
+    const mod = btn.dataset.mod;
+    const status_mod = btn.dataset.statmod;
+    let total = formula
+    if (mod !== 0) {
+      total = `${total}+${mod}`;
+    }
+    if (status_mod !== 0) {
+      total = `${total}+${status_mod}`;
+    }
+    const type = btn.dataset.type;
+    const colorClass = btn.dataset.color;
+    let modules;
+    try {
+      modules = JSON.parse(btn.dataset.modules || "[]");
+      if (!Array.isArray(modules)) modules = [];
+    } catch {
+      modules = [];
+    }
+
+    try {
+      const roll = await (new Roll(total)).roll({ async: true });
+
+      const icon = `systems/sotc/assets/dice types/${type}.png`;
+      const moduleLine = modules.length
+        ? `<div style="margin-top: 4px; font-size: 12px;"><em>${
+            modules.map(m => `<div style="margin-left: 5px;">• ${m}</div>`).join("")
+          }</em></div>`
+        : "";
+
+      const messageContent = `
+        <div class="skill-die-roll">
+          <h3>${item_name} - Reroll ${type}</h3>
+          <div style="margin-left:5px;margin-bottom:5px;">
+            <img src="${icon}" alt="${type}" style="height: 30px; width: 30px; vertical-align: middle; border: none;">
+            <span class="${colorClass}" style="margin-left: 5px; vertical-align: middle; font-size: 16px;">
+              <strong style="text-shadow: black 0.5px 0.5px">${total} = ${roll.total}</strong>
+              <a class="reroll-die"
+                data-formula="${formula}"
+                data-type="${type}"
+                data-mod="${mod}"
+                data-statmod="${status_mod}"
+                data-color="${colorClass}"
+                data-modules='${JSON.stringify(modules)}'
+                data-itemname="${item_name}"
+                title="Reroll this die" 
+                style="width: 16px; height: 16px; color: black; margin-left: 8px;">
+                <i class="fas fa-rotate-left"></i>
+              </a>
+            </span>
+            ${moduleLine ? `<br>${moduleLine}` : ""}
+          </div>
+        </div>
+      `;
+
+      await roll.toMessage({
+        speaker: ChatMessage.getSpeaker(),
+        flavor: messageContent,
+        sound: CONFIG.sounds.dice
+      });
+
+    } catch (err) {
+      console.error("Reroll failed:", err);
+      ui.notifications.error("Could not reroll this die.");
+    }
+  });
 });
