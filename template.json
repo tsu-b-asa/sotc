@@ -7,18 +7,21 @@
                     "value": 30,
                     "min": 0,
                     "max": 30,
-                    "derived": 30
+                    "derived": 30,
+                    "raw": 0
                 },
                 "stagger": {
                     "value": 15,
                     "min": 0,
                     "max": 15,
-                    "derived": 15
+                    "derived": 15,
+                    "raw": 0
                 },
                 "light": {
                     "value": 3,
                     "min": 0,
                     "max": 3,
+                    "raw": 0,
                     "light_regen": 1,
                     "derived_light": 3,
                     "derived_light_regen": 1
@@ -66,7 +69,7 @@
                 "emotion": 0,
                 "biography": "",
                 "mini_img": "systems/sotc/assets/statuses/BlackSilenceIcon.png",
-                "initiative_type": "player"
+                "initiative_type": "npc"
             }
         },
         "character": {
@@ -124,9 +127,12 @@
                 "details": ""
             }],
             "is_player": 1,
+            "sheet_version": "full",
+            "status_print_style": "full",
             "injuries": 0,
             "anxieties": 0,
-            "excellence": 0
+            "excellence": 0,
+            "starting_excellence": 0
         },
         "npc": {
             "templates": ["base"],
@@ -134,7 +140,7 @@
         }
     } ,
     "Item": {
-        "types": ["skill", "ego", "status", "passive"],
+        "types": ["skill", "ego", "status", "passive", "biography", "ego_passive"],
         "templates": {
             "skills": {
                 "name": "",
@@ -151,10 +157,42 @@
                     "die": [{
                         "type": "slash",
                         "formula": "",
-                        "mods": []
+                        "mods": [],
+                        "updated_mods": [{
+                            "tag": ["tagless", "[Check]", "[CLash Win]", "[Clash Lose]", "[On Evade]", "[Hit]", "[Crit]", "custom"], 
+                            "custom_effect": "",
+                            "check_effect": ["increase power", "custom"],
+                            "custom_check": "",
+                            "power_check": 0,
+                            "check_cond": "opp_status",
+                            "check_opp_stat": "",
+                            "resolved_effect": ["inflict", "gain", "custom"],
+                            "custom_resolve": "",
+                            "numeric_resolves": [{
+                                "value": 0,
+                                "stat": "HP",
+                                "timing": "immediately"
+                            }]
+                        }]
                     }]
                 },
                 "skill_modules": "",
+                "updated_skill_modules": [{
+                    "tag": "[On Use]", 
+                    "tagless_effect": "",
+                    "custom_tag": "",
+                    "resolved_effect": "Gain",
+                    "custom_resolve": "",
+                    "spend_resolve": {
+                        "value": 0,
+                        "stat_or_status": "HP"
+                    },
+                    "numeric_resolves": [{
+                        "value": 0,
+                        "stat_or_status": "HP",
+                        "timing": "immediately"
+                    }]
+                }],
                 "dice_modules": {
                     "mods": []
                 }
@@ -166,8 +204,10 @@
         },
         "ego": {
             "templates": ["skills"],
+            "linked_passive_id": "",
             "passive_name": "",
             "passive": "",
+            "is_active": "",
             "risk": "",
             "border_style": "ego"
         },
@@ -178,13 +218,25 @@
             "condition": "",
             "target": "",
             "effect": ["Increase", "Decrease"],
+            "passive_effects": [{
+                "target": "",
+                "effect": "",
+                "potency": 1,
+                "potency_flat": 0
+            }],
             "special": "",
             "potency": 1,
             "potency_flat": 0,
+            "min_stat": 0,
             "post_actives": [{
                 "operator": "maintain",
                 "variable": 0
             }],
+            "bleed_like": {
+                "condition": "",
+                "operator": "maintain",
+                "variable": 0
+            },
             "stagger_effects": {
                 "null_light_regen": false,
                 "null_speed_dice": false,
@@ -202,7 +254,51 @@
         "passive": {
             "name": "",
             "details": "",
-            "type": "passive"
+            "type": "passive",
+            "is_active": false,
+            "effects": [{
+                "target": "",
+                "effect": ["Increase", "Decrease"],
+                "potency_flat": 0
+            }]
+        },
+        "module": {
+            "type": "skill",
+            "index": 0,
+            "dice": 0,
+            "skill_tag": ["tagless", "[On Use]", "[After Use]", "[On Kill]", "[On Stagger]", "[On Stagger or Kill]", "[Proactive]", "[Reactive]", "[Eminence]", "[Exhaust]", "custom"],
+            "dice_tag": ["tagless", "[Check]", "[Clash Win]", "[Clash Lose]", "[On Evade]", "[Hit]", "[Crit]", "custom"],
+            "custom_tag": "",
+            "check": {
+                "check_effect": ["Increase Power", "custom"],
+                "check_power": 0,
+                "check_custom": ""
+            },
+            "conditions": {
+                "target": ["Self", "Target"],
+                "condition": ["Resource", "custom"],
+                "resource": "",
+                "threshold": 0,
+                "direction": "More than"
+            },
+            "resolved_effect": ["Spend", "Inflict", "Gain", "custom", "Trigger", "Recycle"],
+            "custom_resolve": "",
+            "spend_resolve": {
+                "value": 0,
+                "stat_or_status": "HP"
+            },
+            "numeric_resolves": [{
+                "value": 0,
+                "stat": "",
+                "timing": "immediately"
+            }],
+            "trigger_resolve": {
+                "stat": "",
+                "trigger_times": 1,
+                "post_trigger": ["reduce", "do_nothing"],
+                "decrease_val": 0
+            },
+            "recycle_limit": 1
         }
     }
 }
