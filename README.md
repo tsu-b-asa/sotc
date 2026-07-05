@@ -31,7 +31,11 @@ Feature Forecast
 Requested Changes
  - Tsuchigumo and TrueQueenOfRose: Let status effects target/be applied to skills on the character's sheet, for effects like Ember or Pebble or Lock
 					the intention being to either mechanically change power, light cost, or mechanically change something on roll
-
+ - Monika: Add multiplicative resistances (ala Ruina and Limbus Company)
+ - TrueQueenOfRose: Status effects that apply other status effects (I really like this one...)
+ - WildDragon: Status effects that apply one-time effects, like Gain 1 Light next scene.
+ - TheSunShore (and many others, including myself): Bleed automation
+ - Altidiya: Support for active status effects that deal damage to HP when triggered and Stagger on scene-end, or equivalent ideas
 Now, I'll add these gradually over time, but I'd also like to more or less have my finger on the pulse of the users as for what new features are wanted
 To this end, please feel free to contact my, Tsubasa, via my discord: tsubasa______
 
