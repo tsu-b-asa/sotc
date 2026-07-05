@@ -1,0 +1,575 @@
+<form class="flexcol {{cssClass}}" autocomplete="off" style="background-color: #3F3F3F; background-image: url('systems/sotc/assets/sheets/Manual_Default_background.png'); background-size: cover; color: #efc281;">
+    <div class="skill_mod">
+        <select name="system.type" style="width: 88px;">
+            <option value="Skill" {{#if (eq systemData.type "Skill")}}selected{{/if}}>Skill</option>
+            <option value="Dice" {{#if (eq systemData.type "Dice")}}selected{{/if}}>Dice</option>
+        </select>
+        {{#if (eq systemData.type "Skill")}}
+            <select name="system.tag" style="width: 88px;">
+                <option value="tagless" {{#if (eq systemData.tag "tagless")}}selected{{/if}}>Tagless</option>
+                <option value="[On Use]" {{#if (eq systemData.tag "[On Use]")}}selected{{/if}}>On Use</option>
+                <option value="[After Use]" {{#if (eq systemData.tag "[After Use]")}}selected{{/if}}>After Use</option>
+                <option value="[On Kill]" {{#if (eq systemData.tag "[On Kill]")}}selected{{/if}}>On Kill</option>
+                <option value="[On Stagger]" {{#if (eq systemData.tag "[On Stagger]")}}selected{{/if}}>On Stagger</option>
+                <option value="[On Stagger or Kill]" {{#if (eq systemData.tag "[On Stagger or Kill]")}}selected{{/if}}>On Stagger or Kill</option>
+                <option value="[Proactive]" {{#if (eq systemData.tag "[Proactive]")}}selected{{/if}}>Proactive</option>
+                <option value="[Reactive]" {{#if (eq systemData.tag "[Reactive]")}}selected{{/if}}>Reactive</option>
+                <option value="[Eminence]" {{#if (eq systemData.tag "[Eminence]")}}selected{{/if}}>Eminence</option>
+                <option value="[Exhaust]" {{#if (eq systemData.tag "[Exhaust]")}}selected{{/if}}>Exhaust</option>
+                <option value="custom" {{#if (eq systemData.tag "custom")}}selected{{/if}}>Custom Tag</option>
+            </select>
+        {{else if (eq systemData.type "Dice")}}
+            <select name="system.tag" style="width: 88px;">
+                <option value="tagless" {{#if (eq systemData.tag "tagless")}}selected{{/if}}>Tagless</option>
+                <option value="[Check]" {{#if (eq systemData.tag "[Check]")}}selected{{/if}}>On Use</option>
+                <option value="[Clash Win]" {{#if (eq systemData.tag "[Clash Win]")}}selected{{/if}}>After Use</option>
+                <option value="[Clash Lose]" {{#if (eq systemData.tag "[Clash Lose]")}}selected{{/if}}>On Kill</option>
+                <option value="[On Evade]" {{#if (eq systemData.tag "[On Evade]")}}selected{{/if}}>On Stagger</option>
+                <option value="[Hit]" {{#if (eq systemData.tag "[Hit]")}}selected{{/if}}>On Stagger or Kill</option>
+                <option value="[Crit]" {{#if (eq systemData.tag "[Crit]")}}selected{{/if}}>Proactive</option>
+                <option value="custom" {{#if (eq systemData.tag "custom")}}selected{{/if}}>Custom Tag</option>
+            </select>
+        {{/if}}
+        {{#if (eq systemData.tag "custom")}}
+            <input type="text" title="Custom tags will ***NOT*** automatically apply numeric effects!!!" name="system.custom_tag" value="{{systemData.custom_tag}}" style="width: 80px;">
+        {{/if}}
+        {{#if (eq systemData.type "Skill")}}
+            <select name="system.resolved_effect" style="width: 64px;">
+                <option value="Gain" {{#if (eq systemData.resolved_effect "Gain")}}selected{{/if}}>Gain</option>
+                <option value="Spend" {{#if (eq systemData.resolved_effect "Spend")}}selected{{/if}}>Spend</option>
+                <option value="Inflict" {{#if (eq systemData.resolved_effect "Inflict")}}selected{{/if}}>Inflict</option>
+                <option value="custom" {{#if (eq systemData.resolved_effect "custom")}}selected{{/if}}>Custom Effect</option>
+            </select>
+            {{#if (eq systemData.resolved_effect "Gain")}}
+                {{#each systemData.numeric_resolves as |numeric_resolve j|}}
+                    {{#if j}}
+                        <a class="numeric_resolve-control remove-numeric_resolve" data-mod-index="{{i}}" data-resolve-index="{{j}}" title="Remove Effect">and</a>
+                    {{/if}}
+                    <input type="number" title="How much of the status or resource to gain." name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.value" value="{{numeric_resolve.value}}" style="width:24px">
+                    {{#if (or (eq numeric_resolve.stat_or_status "All Dice") (eq numeric_resolve.stat_or_status "Offensive Dice") (eq numeric_resolve.stat_or_status "Defensive Dice")
+                                (eq numeric_resolve.stat_or_status "Slash Dice") (eq numeric_resolve.stat_or_status "Pierce Dice") (eq numeric_resolve.stat_or_status "Blunt Dice")
+                                (eq numeric_resolve.stat_or_status "Block Dice") (eq numeric_resolve.stat_or_status "Evade Dice"))}}
+                        <span>power for</span>
+                    {{/if}}
+                    <select name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.stat_or_status" style="width: 84px;">
+                        <optgroup label="Resources">
+                            <option value="HP" {{#if (eq numeric_resolve.stat_or_status "HP")}}selected{{/if}}>HP</option>
+                            <option value="Stagger" {{#if (eq numeric_resolve.stat_or_status "Stagger")}}selected{{/if}}>Stagger</option>
+                            <option value="Light" {{#if (eq numeric_resolve.stat_or_status "Light")}}selected{{/if}}>Light</option>
+                            <option value="Emotion" {{#if (eq numeric_resolve.stat_or_status "Emotion")}}selected{{/if}}>Emotion</option>
+                        </optgroup>
+                        <optgroup label="Power on this Skill">
+                            <option value="All Dice" {{#if (eq numeric_resolve.stat_or_status "All Dice")}}selected{{/if}}>All Dice</option>
+                            <option value="Offensive Dice" {{#if (eq numeric_resolve.stat_or_status "Offensive Dice")}}selected{{/if}}>Offensive Dice</option>
+                            <option value="Defensive Dice" {{#if (eq numeric_resolve.stat_or_status "Defensive Dice")}}selected{{/if}}>Defensive Dice</option>
+                            <option value="Slash Dice" {{#if (eq numeric_resolve.stat_or_status "Slash Dice")}}selected{{/if}}>Slash Dice</option>
+                            <option value="Pierce Dice" {{#if (eq numeric_resolve.stat_or_status "Pierce Dice")}}selected{{/if}}>Pierce Dice</option>
+                            <option value="Blunt Dice" {{#if (eq numeric_resolve.stat_or_status "Blunt Dice")}}selected{{/if}}>Blunt Dice</option>
+                            <option value="Block Dice" {{#if (eq numeric_resolve.stat_or_status "Block Dice")}}selected{{/if}}>Block Dice</option>
+                            <option value="Evade Dice" {{#if (eq numeric_resolve.stat_or_status "Evade Dice")}}selected{{/if}}>Evade Dice</option>
+                        </optgroup>
+                        <optgroup label="Statuses">
+                            <!-- The little ../../ is so that we can access actor_statuses while within the each loop, by backing out to sheet context -->
+                            {{selectOptions ../../actor_statuses selected=numeric_resolve.stat_or_status}}
+                        </optgroup>
+                        <optgroup label="Other">
+                            <option value="Counter/Defensive Dice" {{#if (eq numeric_resolve.stat_or_status "Counter/Defensive Dice")}}selected{{/if}}>Counter/Defensive Dice</option>
+                        </optgroup>
+                    </select>
+                        <!-- I don't know WHY this wasn't working, but it just wasn't. actor_statuses was an array that should have worked perfectly,
+                            but for some reason it decided to never render the options? Turns out that selectOptions exists though, so that's neat.
+                            Looking back at this, it's definitely the ../../ that would've made the difference. Oh well!
+                        {{#each actor_statuses as |status k| }}
+                            <option value="{{status._id}}" {{#if (eq numeric_resolve.stat_or_status status._id)}}selected{{/if}}>{{status.name}}</option>
+                        {{/each}}
+                        -->
+                    {{#unless (or (eq numeric_resolve.stat_or_status "All Dice") (eq numeric_resolve.stat_or_status "Offensive Dice") (eq numeric_resolve.stat_or_status "Defensive Dice")
+                                (eq numeric_resolve.stat_or_status "Slash Dice") (eq numeric_resolve.stat_or_status "Pierce Dice") (eq numeric_resolve.stat_or_status "Blunt Dice")
+                                (eq numeric_resolve.stat_or_status "Block Dice") (eq numeric_resolve.stat_or_status "Evade Dice"))}}
+                        <select name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.timing" style="width: 84px;">
+                            <option value="immediately" {{#if (eq numeric_resolve.timing "immediately")}}selected{{/if}}>Immediately</option>
+                            <option value="next scene" {{#if (eq numeric_resolve.timing "next scene")}}selected{{/if}}>Next Scene</option>
+                        </select>
+                    {{/unless}}
+                {{/each}}
+                <a class="numeric_resolve-control add-numeric_resolve" data-mod-index="{{i}}"><i class="fas fa-plus"></i></a>
+            {{else if (eq mod.resolved_effect "Spend")}}
+                <input type="number"  title="How much of the status or resource to SPEND." name="system.updated_skill_modules.{{i}}.spend_resolve.value" value="{{mod.spend_resolve.value}}" style="width:24px">
+                <select name="system.updated_skill_modules.{{i}}.spend_resolve.stat_or_status" style="width: 88px;">
+                    <optgroup label="Resources">
+                        <option value="HP" {{#if (eq mod.spend_resolve.stat_or_status "HP")}}selected{{/if}}>HP</option>
+                        <option value="Stagger" {{#if (eq mod.spend_resolve.stat_or_status "Stagger")}}selected{{/if}}>Stagger</option>
+                        <option value="Light" {{#if (eq mod.spend_resolve.stat_or_status "Light")}}selected{{/if}}>Light</option>
+                        <option value="Emotion" {{#if (eq mod.spend_resolve.stat_or_status "Emotion")}}selected{{/if}}>Emotion</option>
+                    </optgroup>
+                    <optgroup label="Statuses">
+                        <!-- The little ../ (smaller this time because we're only inside one loop) is so that we can access actor_statuses -->
+                        {{selectOptions ../actor_statuses selected=mod.spend_resolve.stat_or_status}}
+                    </optgroup>
+                </select>
+                <span>to gain</span>
+                {{#each mod.numeric_resolves as |numeric_resolve j|}}
+                    {{#if j}}
+                        <a class="numeric_resolve-control remove-numeric_resolve" data-mod-index="{{i}}" data-resolve-index="{{j}}" title="Remove Effect">and</a>
+                    {{/if}}
+                    <input type="number" title="How much of the status or resource to gain." name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.value" value="{{numeric_resolve.value}}" style="width:24px">
+                    <!-- Ugly as hell, but it DOES work for what it needs to do -->
+                    {{#if (or (eq numeric_resolve.stat_or_status "All Dice") (eq numeric_resolve.stat_or_status "Offensive Dice") (eq numeric_resolve.stat_or_status "Defensive Dice")
+                                (eq numeric_resolve.stat_or_status "Slash Dice") (eq numeric_resolve.stat_or_status "Pierce Dice") (eq numeric_resolve.stat_or_status "Blunt Dice")
+                                (eq numeric_resolve.stat_or_status "Block Dice") (eq numeric_resolve.stat_or_status "Evade Dice"))}}
+                        <span>power for</span>
+                    {{/if}}
+                    <select name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.stat_or_status" style="width: 84px;">
+                        <optgroup label="Resources">
+                            <option value="HP" {{#if (eq numeric_resolve.stat_or_status "HP")}}selected{{/if}}>HP</option>
+                            <option value="Stagger" {{#if (eq numeric_resolve.stat_or_status "Stagger")}}selected{{/if}}>Stagger</option>
+                            <option value="Light" {{#if (eq numeric_resolve.stat_or_status "Light")}}selected{{/if}}>Light</option>
+                            <option value="Emotion" {{#if (eq numeric_resolve.stat_or_status "Emotion")}}selected{{/if}}>Emotion</option>
+                        </optgroup>
+                        <optgroup label="Power on this Skill">
+                            <option value="All Dice" {{#if (eq numeric_resolve.stat_or_status "All Dice")}}selected{{/if}}>All Dice</option>
+                            <option value="Offensive Dice" {{#if (eq numeric_resolve.stat_or_status "Offensive Dice")}}selected{{/if}}>Offensive Dice</option>
+                            <option value="Defensive Dice" {{#if (eq numeric_resolve.stat_or_status "Defensive Dice")}}selected{{/if}}>Defensive Dice</option>
+                            <option value="Slash Dice" {{#if (eq numeric_resolve.stat_or_status "Slash Dice")}}selected{{/if}}>Slash Dice</option>
+                            <option value="Pierce Dice" {{#if (eq numeric_resolve.stat_or_status "Pierce Dice")}}selected{{/if}}>Pierce Dice</option>
+                            <option value="Blunt Dice" {{#if (eq numeric_resolve.stat_or_status "Blunt Dice")}}selected{{/if}}>Blunt Dice</option>
+                            <option value="Block Dice" {{#if (eq numeric_resolve.stat_or_status "Block Dice")}}selected{{/if}}>Block Dice</option>
+                            <option value="Evade Dice" {{#if (eq numeric_resolve.stat_or_status "Evade Dice")}}selected{{/if}}>Evade Dice</option>
+                        </optgroup>
+                        <optgroup label="Statuses">
+                            {{selectOptions ../../actor_statuses selected=numeric_resolve.stat_or_status}}
+                        </optgroup>
+                    </select>
+                    {{#unless (or (eq numeric_resolve.stat_or_status "All Dice") (eq numeric_resolve.stat_or_status "Offensive Dice") (eq numeric_resolve.stat_or_status "Defensive Dice")
+                                (eq numeric_resolve.stat_or_status "Slash Dice") (eq numeric_resolve.stat_or_status "Pierce Dice") (eq numeric_resolve.stat_or_status "Blunt Dice")
+                                (eq numeric_resolve.stat_or_status "Block Dice") (eq numeric_resolve.stat_or_status "Evade Dice"))}}
+                        <select name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.timing" style="width: 84px;">
+                            <option value="immediately" {{#if (eq numeric_resolve.timing "immediately")}}selected{{/if}}>Immediately</option>
+                            <option value="next scene" {{#if (eq numeric_resolve.timing "next scene")}}selected{{/if}}>Next Scene</option>
+                        </select>
+                    {{/unless}}
+                {{/each}}
+                <a class="numeric_resolve-control add-numeric_resolve" data-mod-index="{{i}}"><i class="fas fa-plus"></i></a>
+            {{else if (eq mod.resolved_effect "Inflict")}}
+                {{#each mod.numeric_resolves as |numeric_resolve j|}}
+                    {{#if j}}
+                        <a class="numeric_resolve-control remove-numeric_resolve" data-mod-index="{{i}}" data-resolve-index="{{j}}" title="Remove Effect">and</a>
+                    {{/if}}
+                    <input type="number" title="How much of the status or resource to inflict/damage." name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.value" value="{{numeric_resolve.value}}" style="width:24px">
+                    {{#if (or (eq numeric_resolve.stat_or_status "All Dice") (eq numeric_resolve.stat_or_status "Offensive Dice") (eq numeric_resolve.stat_or_status "Defensive Dice")
+                                (eq numeric_resolve.stat_or_status "Slash Dice") (eq numeric_resolve.stat_or_status "Pierce Dice") (eq numeric_resolve.stat_or_status "Blunt Dice")
+                                (eq numeric_resolve.stat_or_status "Block Dice") (eq numeric_resolve.stat_or_status "Evade Dice"))}}
+                        <span>power down for</span>
+                    {{/if}}
+                    <select name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.stat_or_status" style="width: 84px;">
+                        <optgroup label="Resources">
+                            <option value="HP Damage" {{#if (eq numeric_resolve.stat_or_status "HP Damage")}}selected{{/if}}>HP Damage</option>
+                            <option value="Stagger Damage" {{#if (eq numeric_resolve.stat_or_status "Stagger Damage")}}selected{{/if}}>Stagger Damage</option>
+                            <option value="Light Down" {{#if (eq numeric_resolve.stat_or_status "Light Down")}}selected{{/if}}>Light Down</option>
+                            <option value="Emotion Down" {{#if (eq numeric_resolve.stat_or_status "Emotion Down")}}selected{{/if}}>Emotion Down</option>
+                        </optgroup>
+                        <optgroup label="Power on the Opposing Skill">
+                            <option value="All Dice" {{#if (eq numeric_resolve.stat_or_status "All Dice")}}selected{{/if}}>All Dice</option>
+                            <option value="Offensive Dice" {{#if (eq numeric_resolve.stat_or_status "Offensive Dice")}}selected{{/if}}>Offensive Dice</option>
+                            <option value="Defensive Dice" {{#if (eq numeric_resolve.stat_or_status "Defensive Dice")}}selected{{/if}}>Defensive Dice</option>
+                            <option value="Slash Dice" {{#if (eq numeric_resolve.stat_or_status "Slash Dice")}}selected{{/if}}>Slash Dice</option>
+                            <option value="Pierce Dice" {{#if (eq numeric_resolve.stat_or_status "Pierce Dice")}}selected{{/if}}>Pierce Dice</option>
+                            <option value="Blunt Dice" {{#if (eq numeric_resolve.stat_or_status "Blunt Dice")}}selected{{/if}}>Blunt Dice</option>
+                            <option value="Block Dice" {{#if (eq numeric_resolve.stat_or_status "Block Dice")}}selected{{/if}}>Block Dice</option>
+                            <option value="Evade Dice" {{#if (eq numeric_resolve.stat_or_status "Evade Dice")}}selected{{/if}}>Evade Dice</option>
+                        </optgroup>
+                        <optgroup label="Statuses">
+                            {{selectOptions ../../actor_statuses selected=numeric_resolve.stat_or_status}}
+                        </optgroup>
+                    </select>
+                    {{#unless (or (eq numeric_resolve.stat_or_status "All Dice") (eq numeric_resolve.stat_or_status "Offensive Dice") (eq numeric_resolve.stat_or_status "Defensive Dice")
+                                (eq numeric_resolve.stat_or_status "Slash Dice") (eq numeric_resolve.stat_or_status "Pierce Dice") (eq numeric_resolve.stat_or_status "Blunt Dice")
+                                (eq numeric_resolve.stat_or_status "Block Dice") (eq numeric_resolve.stat_or_status "Evade Dice"))}}
+                        <select name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.timing" style="width: 84px;">
+                            <option value="immediately" {{#if (eq numeric_resolve.timing "immediately")}}selected{{/if}}>Immediately</option>
+                            <option value="next scene" {{#if (eq numeric_resolve.timing "next scene")}}selected{{/if}}>Next Scene</option>
+                        </select>
+                    {{/unless}}
+                {{/each}}
+                <a class="numeric_resolve-control add-numeric_resolve" data-mod-index="{{i}}" title="Add Effect"><i class="fas fa-plus"></i></a>
+            {{else if (eq mod.resolved_effect "custom")}}
+                <input type="text" title="Custom Effect" name="system.updated_skill_modules.{{i}}.custom_resolve" value="{{mod.custom_resolve}}" style="width: 256px">
+            {{/if}}
+        {{else if (eq systemData.type "Dice")}}
+            <select name="system.resolved_effect" style="width: 64px;">
+                <option value="Gain" {{#if (eq systemData.resolved_effect "Gain")}}selected{{/if}}>Gain</option>
+                <option value="Inflict" {{#if (eq systemData.resolved_effect "Inflict")}}selected{{/if}}>Inflict</option>
+                <option value="Trigger" {{#if (eq systemData.resolved_effect "Trigger")}}selected{{/if}}>Trigger</option>
+                <option value="Recycle" {{#if (eq systemData.resolved_effect "Recycle")}}selected{{/if}}>Recycle</option>
+                <option value="custom" {{#if (eq systemData.resolved_effect "custom")}}selected{{/if}}>Custom Effect</option>
+            </select>
+            {{#if (eq systemData.resolved_effect "Gain")}}
+                {{#each systemData.numeric_resolves as |numeric_resolve j|}}
+                    {{#if j}}
+                        <a class="numeric_resolve-control remove-numeric_resolve" data-mod-index="{{i}}" data-resolve-index="{{j}}" title="Remove Effect">and</a>
+                    {{/if}}
+                    <input type="number" title="How much of the status or resource to gain." name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.value" value="{{numeric_resolve.value}}" style="width:24px">
+                    {{#if (or (eq numeric_resolve.stat_or_status "Next Die") (eq numeric_resolve.stat_or_status "All Die") (eq numeric_resolve.stat_or_status "Final Die"))}}
+                        <span>power for</span>
+                    {{/if}}
+                    <select name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.stat_or_status" style="width: 84px;">
+                        <optgroup label="Resources">
+                            <option value="HP" {{#if (eq numeric_resolve.stat_or_status "HP")}}selected{{/if}}>HP</option>
+                            <option value="Stagger" {{#if (eq numeric_resolve.stat_or_status "Stagger")}}selected{{/if}}>Stagger</option>
+                            <option value="Light" {{#if (eq numeric_resolve.stat_or_status "Light")}}selected{{/if}}>Light</option>
+                            <option value="Emotion" {{#if (eq numeric_resolve.stat_or_status "Emotion")}}selected{{/if}}>Emotion</option>
+                        </optgroup>
+                        <optgroup label="Power on this Skill">
+                            <option value="Next Die" {{#if (eq numeric_resolve.stat_or_status "Next Die")}}selected{{/if}}>The Next Die</option>
+                            <option value="All Die" {{#if (eq numeric_resolve.stat_or_status "All Die")}}selected{{/if}}>All Remaining Die</option>
+                            <option value="Final Die" {{#if (eq numeric_resolve.stat_or_status "Final Die")}}selected{{/if}}>The Final Die on this skill</option>
+                        </optgroup>
+                        <optgroup label="Statuses">
+                            <!-- The little ../../ is so that we can access actor_statuses while within the each loop, by backing out to sheet context -->
+                            {{selectOptions ../../actor_statuses selected=numeric_resolve.stat_or_status}}
+                        </optgroup>
+                    </select>
+                {{/each}}
+                <a class="numeric_resolve-control add-numeric_resolve" data-mod-index="{{i}}"><i class="fas fa-plus"></i></a>
+            {{else if (eq systemData.resolved_effect "Inflict")}}
+                {{#each mod.numeric_resolves as |numeric_resolve j|}}
+                    {{#if j}}
+                        <a class="numeric_resolve-control remove-numeric_resolve" data-mod-index="{{i}}" data-resolve-index="{{j}}" title="Remove Effect">and</a>
+                    {{/if}}
+                    <input type="number" title="How much of the status or resource to inflict/damage." name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.value" value="{{numeric_resolve.value}}" style="width:24px">
+                    <select name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.stat_or_status" style="width: 84px;">
+                        <optgroup label="Resources">
+                            <option value="HP Damage" {{#if (eq numeric_resolve.stat_or_status "HP Damage")}}selected{{/if}}>HP Damage</option>
+                            <option value="Stagger Damage" {{#if (eq numeric_resolve.stat_or_status "Stagger Damage")}}selected{{/if}}>Stagger Damage</option>
+                            <option value="Light Down" {{#if (eq numeric_resolve.stat_or_status "Light Down")}}selected{{/if}}>Light Down</option>
+                            <option value="Emotion Down" {{#if (eq numeric_resolve.stat_or_status "Emotion Down")}}selected{{/if}}>Emotion Down</option>
+                        </optgroup>
+                        <optgroup label="Statuses">
+                            {{selectOptions ../../actor_statuses selected=numeric_resolve.stat_or_status}}
+                        </optgroup>
+                    </select>
+                    {{#unless (or (eq numeric_resolve.stat_or_status "HP Damage") (eq numeric_resolve.stat_or_status "Stagger Damage"))}}
+                        <select name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.timing" style="width: 84px;">
+                            <option value="immediately" {{#if (eq numeric_resolve.timing "immediately")}}selected{{/if}}>Immediately</option>
+                            <option value="next scene" {{#if (eq numeric_resolve.timing "next scene")}}selected{{/if}}>Next Scene</option>
+                        </select>
+                    {{/unless}}
+                {{/each}}
+                <a class="numeric_resolve-control add-numeric_resolve" data-mod-index="{{i}}" title="Add Effect"><i class="fas fa-plus"></i></a>
+            {{else if (eq systemData.resolved_effect "Trigger")}}
+                <select name="system.trigger_resolve.stat" style="width: 84px;">
+                    {{selectOptions ../../actor_statuses selected=system.trigger_resolve.stat}}
+                </select>
+                <input type="number" title="How many times to trigger the status" name="system.trigger_resolve.trigger_times" value="{{systemData.trigger_resolve.trigger_times}}" style="width:24px">
+                <span>times, then</span>
+                <select name="system.trigger_resolve.post_trigger" style="width: 84px;">
+                    <option value="Do Nothing" {{#if (eq systemData.trigger_resolve.post_trigger "Do Nothing")}}selected{{/if}}>Do Nothing</option>
+                    <option value="Reduce By" {{#if (eq systemData.trigger_resolve.post_trigger "Reduce By")}}selected{{/if}}>Reduce By</option>
+                    <option value="Clear" {{#if (eq systemData.trigger_resolve.post_trigger "Clear")}}selected{{/if}}>Clear Status</option>
+                </select>
+                {{#if (eq systemData.trigger_resolve.post_trigger "Reduce By")}}
+                    <input type="number" title="How much to decrease the status by" name="system.trigger_resolve.decrease_val" value="{{systemData.trigger_resolve.decrease_val}}" style="width:24px">
+                {{/if}}
+            {{else if (eq systemData.resolved_effect "Recycle")}}
+                <span>Up to</span>
+                <input type="number" title="Maximum times to recycle" name="system.recycle_limit" value="{{systemData.recycle_limit}}" style="width:24px">
+                <span>times.</span>
+            {{else if (eq mod.resolved_effect "custom")}}
+                <input type="text" title="Custom Effect" name="system.updated_skill_modules.{{i}}.custom_resolve" value="{{mod.custom_resolve}}" style="width: 256px">
+            {{/if}}
+        {{/if}}
+
+<div class="skill_mods">
+    {{#if sheetEditMode}}
+        <textarea type="text" name="system.skill_modules.mods" placeholder="[On Use] ..." style="margin-left:5%; width: 95%;">{{systemData.skill_modules.mods}}</textarea>
+        <ol class="updated_skill_mods" style="padding-inline-start: 0px; ">
+            {{#each systemData.updated_skill_modules as |mod i| }}
+                <li class="skill_modules-mods flexrow" data-mod-index="{{i}}" style="align-items: center; gap: 3px; font-size: 12px; margin-bottom: 4px;">
+                    <a class="skill_modules-control remove-skill_modules" title="Remove Skill Module" data-mod-index="{{i}}" style="width:15px; align-self: start; margin-top: 4px;"><i class="fas fa-minus"></i></a>
+                    <div class="skill_mods_div">
+                        <!-- Tagless, eminence, proactive, and reactive are like before use, then there's on use and exhaust, then the on kills can happen during, and after use after. Hurray!-->
+                        <!-- Custom lets the user bypass any automation and still do their own unique funky things -->
+                        <select name="system.updated_skill_modules.{{i}}.tag" style="width: 88px;">
+                            <option value="tagless" {{#if (eq mod.tag "tagless")}}selected{{/if}}>Tagless</option>
+                            <option value="[On Use]" {{#if (eq mod.tag "[On Use]")}}selected{{/if}}>On Use</option>
+                            <option value="[After Use]" {{#if (eq mod.tag "[After Use]")}}selected{{/if}}>After Use</option>
+                            <option value="[On Kill]" {{#if (eq mod.tag "[On Kill]")}}selected{{/if}}>On Kill</option>
+                            <option value="[On Stagger]" {{#if (eq mod.tag "[On Stagger]")}}selected{{/if}}>On Stagger</option>
+                            <option value="[On Stagger or Kill]" {{#if (eq mod.tag "[On Stagger or Kill]")}}selected{{/if}}>On Stagger or Kill</option>
+                            <option value="[Proactive]" {{#if (eq mod.tag "[Proactive]")}}selected{{/if}}>Proactive</option>
+                            <option value="[Reactive]" {{#if (eq mod.tag "[Reactive]")}}selected{{/if}}>Reactive</option>
+                            <option value="[Eminence]" {{#if (eq mod.tag "[Eminence]")}}selected{{/if}}>Eminence</option>
+                            <option value="[Exhaust]" {{#if (eq mod.tag "[Exhaust]")}}selected{{/if}}>Exhaust</option>
+                            <option value="custom" {{#if (eq mod.tag "custom")}}selected{{/if}}>Custom Tag</option>
+                        </select>
+                        <!-- Examples: Gain X Strength and Y Fragile. Spend 5 Charge to gain +2 Power on all Dice. Inflict X Sinking on target. Custom, Onrush.-->
+                        <select name="system.updated_skill_modules.{{i}}.resolved_effect" style="width: 64px;">
+                            <option value="Gain" {{#if (eq mod.resolved_effect "Gain")}}selected{{/if}}>Gain</option>
+                            <option value="Spend" {{#if (eq mod.resolved_effect "Spend")}}selected{{/if}}>Spend</option>
+                            <option value="Inflict" {{#if (eq mod.resolved_effect "Inflict")}}selected{{/if}}>Inflict</option>
+                            <option value="custom" {{#if (eq mod.resolved_effect "custom")}}selected{{/if}}>Custom Effect</option>
+                        </select>
+                        <!-- At this point I'm starting to realize why I didn't originally set up skill mods with the first version. I need to start documenting this YESTERDAY-->
+                        <!-- Okay, so, if we're gaining something (i.e. Gain 2 Poise) then we can set that up numerically for the skill to do when it is rolled.-->
+                        <!-- I forget what the exact term is, but the premise is straight-forward. Give nested options to fulfill whatever the heck the user wants.-->
+                        <!-- Use an "and" button (instead of a +) to add more effects to whatever we're gaining, and then gain it at the correct time.-->
+                        
+                        {{#if (eq mod.resolved_effect "Gain")}}
+                            {{#each mod.numeric_resolves as |numeric_resolve j|}}
+                                {{#if j}}
+                                    <a class="numeric_resolve-control remove-numeric_resolve" data-mod-index="{{i}}" data-resolve-index="{{j}}" title="Remove Effect">and</a>
+                                {{/if}}
+                                <input type="number" title="How much of the status or resource to gain." name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.value" value="{{numeric_resolve.value}}" style="width:24px">
+                                {{#if (or (eq numeric_resolve.stat_or_status "All Dice") (eq numeric_resolve.stat_or_status "Offensive Dice") (eq numeric_resolve.stat_or_status "Defensive Dice")
+                                            (eq numeric_resolve.stat_or_status "Slash Dice") (eq numeric_resolve.stat_or_status "Pierce Dice") (eq numeric_resolve.stat_or_status "Blunt Dice")
+                                            (eq numeric_resolve.stat_or_status "Block Dice") (eq numeric_resolve.stat_or_status "Evade Dice"))}}
+                                    <span>power for</span>
+                                {{/if}}
+                                <select name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.stat_or_status" style="width: 84px;">
+                                    <optgroup label="Resources">
+                                        <option value="HP" {{#if (eq numeric_resolve.stat_or_status "HP")}}selected{{/if}}>HP</option>
+                                        <option value="Stagger" {{#if (eq numeric_resolve.stat_or_status "Stagger")}}selected{{/if}}>Stagger</option>
+                                        <option value="Light" {{#if (eq numeric_resolve.stat_or_status "Light")}}selected{{/if}}>Light</option>
+                                        <option value="Emotion" {{#if (eq numeric_resolve.stat_or_status "Emotion")}}selected{{/if}}>Emotion</option>
+                                    </optgroup>
+                                    <optgroup label="Power on this Skill">
+                                        <option value="All Dice" {{#if (eq numeric_resolve.stat_or_status "All Dice")}}selected{{/if}}>All Dice</option>
+                                        <option value="Offensive Dice" {{#if (eq numeric_resolve.stat_or_status "Offensive Dice")}}selected{{/if}}>Offensive Dice</option>
+                                        <option value="Defensive Dice" {{#if (eq numeric_resolve.stat_or_status "Defensive Dice")}}selected{{/if}}>Defensive Dice</option>
+                                        <option value="Slash Dice" {{#if (eq numeric_resolve.stat_or_status "Slash Dice")}}selected{{/if}}>Slash Dice</option>
+                                        <option value="Pierce Dice" {{#if (eq numeric_resolve.stat_or_status "Pierce Dice")}}selected{{/if}}>Pierce Dice</option>
+                                        <option value="Blunt Dice" {{#if (eq numeric_resolve.stat_or_status "Blunt Dice")}}selected{{/if}}>Blunt Dice</option>
+                                        <option value="Block Dice" {{#if (eq numeric_resolve.stat_or_status "Block Dice")}}selected{{/if}}>Block Dice</option>
+                                        <option value="Evade Dice" {{#if (eq numeric_resolve.stat_or_status "Evade Dice")}}selected{{/if}}>Evade Dice</option>
+                                    </optgroup>
+                                    <optgroup label="Statuses">
+                                        <!-- The little ../../ is so that we can access actor_statuses while within the each loop, by backing out to sheet context -->
+                                        {{selectOptions ../../actor_statuses selected=numeric_resolve.stat_or_status}}
+                                    </optgroup>
+                                    <optgroup label="Other">
+                                        <option value="Counter/Defensive Dice" {{#if (eq numeric_resolve.stat_or_status "Counter/Defensive Dice")}}selected{{/if}}>Counter/Defensive Dice</option>
+                                    </optgroup>
+                                </select>
+                                    <!-- I don't know WHY this wasn't working, but it just wasn't. actor_statuses was an array that should have worked perfectly,
+                                        but for some reason it decided to never render the options? Turns out that selectOptions exists though, so that's neat.
+                                        Looking back at this, it's definitely the ../../ that would've made the difference. Oh well!
+                                    {{#each actor_statuses as |status k| }}
+                                        <option value="{{status._id}}" {{#if (eq numeric_resolve.stat_or_status status._id)}}selected{{/if}}>{{status.name}}</option>
+                                    {{/each}}
+                                    -->
+                                {{#unless (or (eq numeric_resolve.stat_or_status "All Dice") (eq numeric_resolve.stat_or_status "Offensive Dice") (eq numeric_resolve.stat_or_status "Defensive Dice")
+                                            (eq numeric_resolve.stat_or_status "Slash Dice") (eq numeric_resolve.stat_or_status "Pierce Dice") (eq numeric_resolve.stat_or_status "Blunt Dice")
+                                            (eq numeric_resolve.stat_or_status "Block Dice") (eq numeric_resolve.stat_or_status "Evade Dice"))}}
+                                    <select name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.timing" style="width: 84px;">
+                                        <option value="immediately" {{#if (eq numeric_resolve.timing "immediately")}}selected{{/if}}>Immediately</option>
+                                        <option value="next scene" {{#if (eq numeric_resolve.timing "next scene")}}selected{{/if}}>Next Scene</option>
+                                    </select>
+                                {{/unless}}
+                            {{/each}}
+                            <a class="numeric_resolve-control add-numeric_resolve" data-mod-index="{{i}}"><i class="fas fa-plus"></i></a>
+                        {{else if (eq mod.resolved_effect "Spend")}}
+                            <input type="number"  title="How much of the status or resource to SPEND." name="system.updated_skill_modules.{{i}}.spend_resolve.value" value="{{mod.spend_resolve.value}}" style="width:24px">
+                            <select name="system.updated_skill_modules.{{i}}.spend_resolve.stat_or_status" style="width: 88px;">
+                                <optgroup label="Resources">
+                                    <option value="HP" {{#if (eq mod.spend_resolve.stat_or_status "HP")}}selected{{/if}}>HP</option>
+                                    <option value="Stagger" {{#if (eq mod.spend_resolve.stat_or_status "Stagger")}}selected{{/if}}>Stagger</option>
+                                    <option value="Light" {{#if (eq mod.spend_resolve.stat_or_status "Light")}}selected{{/if}}>Light</option>
+                                    <option value="Emotion" {{#if (eq mod.spend_resolve.stat_or_status "Emotion")}}selected{{/if}}>Emotion</option>
+                                </optgroup>
+                                <optgroup label="Statuses">
+                                    <!-- The little ../ (smaller this time because we're only inside one loop) is so that we can access actor_statuses -->
+                                    {{selectOptions ../actor_statuses selected=mod.spend_resolve.stat_or_status}}
+                                </optgroup>
+                            </select>
+                            <span>to gain</span>
+                            {{#each mod.numeric_resolves as |numeric_resolve j|}}
+                                {{#if j}}
+                                    <a class="numeric_resolve-control remove-numeric_resolve" data-mod-index="{{i}}" data-resolve-index="{{j}}" title="Remove Effect">and</a>
+                                {{/if}}
+                                <input type="number" title="How much of the status or resource to gain." name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.value" value="{{numeric_resolve.value}}" style="width:24px">
+                                <!-- Ugly as hell, but it DOES work for what it needs to do -->
+                                {{#if (or (eq numeric_resolve.stat_or_status "All Dice") (eq numeric_resolve.stat_or_status "Offensive Dice") (eq numeric_resolve.stat_or_status "Defensive Dice")
+                                            (eq numeric_resolve.stat_or_status "Slash Dice") (eq numeric_resolve.stat_or_status "Pierce Dice") (eq numeric_resolve.stat_or_status "Blunt Dice")
+                                            (eq numeric_resolve.stat_or_status "Block Dice") (eq numeric_resolve.stat_or_status "Evade Dice"))}}
+                                    <span>power for</span>
+                                {{/if}}
+                                <select name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.stat_or_status" style="width: 84px;">
+                                    <optgroup label="Resources">
+                                        <option value="HP" {{#if (eq numeric_resolve.stat_or_status "HP")}}selected{{/if}}>HP</option>
+                                        <option value="Stagger" {{#if (eq numeric_resolve.stat_or_status "Stagger")}}selected{{/if}}>Stagger</option>
+                                        <option value="Light" {{#if (eq numeric_resolve.stat_or_status "Light")}}selected{{/if}}>Light</option>
+                                        <option value="Emotion" {{#if (eq numeric_resolve.stat_or_status "Emotion")}}selected{{/if}}>Emotion</option>
+                                    </optgroup>
+                                    <optgroup label="Power on this Skill">
+                                        <option value="All Dice" {{#if (eq numeric_resolve.stat_or_status "All Dice")}}selected{{/if}}>All Dice</option>
+                                        <option value="Offensive Dice" {{#if (eq numeric_resolve.stat_or_status "Offensive Dice")}}selected{{/if}}>Offensive Dice</option>
+                                        <option value="Defensive Dice" {{#if (eq numeric_resolve.stat_or_status "Defensive Dice")}}selected{{/if}}>Defensive Dice</option>
+                                        <option value="Slash Dice" {{#if (eq numeric_resolve.stat_or_status "Slash Dice")}}selected{{/if}}>Slash Dice</option>
+                                        <option value="Pierce Dice" {{#if (eq numeric_resolve.stat_or_status "Pierce Dice")}}selected{{/if}}>Pierce Dice</option>
+                                        <option value="Blunt Dice" {{#if (eq numeric_resolve.stat_or_status "Blunt Dice")}}selected{{/if}}>Blunt Dice</option>
+                                        <option value="Block Dice" {{#if (eq numeric_resolve.stat_or_status "Block Dice")}}selected{{/if}}>Block Dice</option>
+                                        <option value="Evade Dice" {{#if (eq numeric_resolve.stat_or_status "Evade Dice")}}selected{{/if}}>Evade Dice</option>
+                                    </optgroup>
+                                    <optgroup label="Statuses">
+                                        {{selectOptions ../../actor_statuses selected=numeric_resolve.stat_or_status}}
+                                    </optgroup>
+                                </select>
+                                {{#unless (or (eq numeric_resolve.stat_or_status "All Dice") (eq numeric_resolve.stat_or_status "Offensive Dice") (eq numeric_resolve.stat_or_status "Defensive Dice")
+                                            (eq numeric_resolve.stat_or_status "Slash Dice") (eq numeric_resolve.stat_or_status "Pierce Dice") (eq numeric_resolve.stat_or_status "Blunt Dice")
+                                            (eq numeric_resolve.stat_or_status "Block Dice") (eq numeric_resolve.stat_or_status "Evade Dice"))}}
+                                    <select name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.timing" style="width: 84px;">
+                                        <option value="immediately" {{#if (eq numeric_resolve.timing "immediately")}}selected{{/if}}>Immediately</option>
+                                        <option value="next scene" {{#if (eq numeric_resolve.timing "next scene")}}selected{{/if}}>Next Scene</option>
+                                    </select>
+                                {{/unless}}
+                            {{/each}}
+                            <a class="numeric_resolve-control add-numeric_resolve" data-mod-index="{{i}}"><i class="fas fa-plus"></i></a>
+                        {{else if (eq mod.resolved_effect "Inflict")}}
+                            {{#each mod.numeric_resolves as |numeric_resolve j|}}
+                                {{#if j}}
+                                    <a class="numeric_resolve-control remove-numeric_resolve" data-mod-index="{{i}}" data-resolve-index="{{j}}" title="Remove Effect">and</a>
+                                {{/if}}
+                                <input type="number" title="How much of the status or resource to inflict/damage." name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.value" value="{{numeric_resolve.value}}" style="width:24px">
+                                {{#if (or (eq numeric_resolve.stat_or_status "All Dice") (eq numeric_resolve.stat_or_status "Offensive Dice") (eq numeric_resolve.stat_or_status "Defensive Dice")
+                                            (eq numeric_resolve.stat_or_status "Slash Dice") (eq numeric_resolve.stat_or_status "Pierce Dice") (eq numeric_resolve.stat_or_status "Blunt Dice")
+                                            (eq numeric_resolve.stat_or_status "Block Dice") (eq numeric_resolve.stat_or_status "Evade Dice"))}}
+                                    <span>power down for</span>
+                                {{/if}}
+                                <select name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.stat_or_status" style="width: 84px;">
+                                    <optgroup label="Resources">
+                                        <option value="HP Damage" {{#if (eq numeric_resolve.stat_or_status "HP Damage")}}selected{{/if}}>HP Damage</option>
+                                        <option value="Stagger Damage" {{#if (eq numeric_resolve.stat_or_status "Stagger Damage")}}selected{{/if}}>Stagger Damage</option>
+                                        <option value="Light Down" {{#if (eq numeric_resolve.stat_or_status "Light Down")}}selected{{/if}}>Light Down</option>
+                                        <option value="Emotion Down" {{#if (eq numeric_resolve.stat_or_status "Emotion Down")}}selected{{/if}}>Emotion Down</option>
+                                    </optgroup>
+                                    <optgroup label="Power on the Opposing Skill">
+                                        <option value="All Dice" {{#if (eq numeric_resolve.stat_or_status "All Dice")}}selected{{/if}}>All Dice</option>
+                                        <option value="Offensive Dice" {{#if (eq numeric_resolve.stat_or_status "Offensive Dice")}}selected{{/if}}>Offensive Dice</option>
+                                        <option value="Defensive Dice" {{#if (eq numeric_resolve.stat_or_status "Defensive Dice")}}selected{{/if}}>Defensive Dice</option>
+                                        <option value="Slash Dice" {{#if (eq numeric_resolve.stat_or_status "Slash Dice")}}selected{{/if}}>Slash Dice</option>
+                                        <option value="Pierce Dice" {{#if (eq numeric_resolve.stat_or_status "Pierce Dice")}}selected{{/if}}>Pierce Dice</option>
+                                        <option value="Blunt Dice" {{#if (eq numeric_resolve.stat_or_status "Blunt Dice")}}selected{{/if}}>Blunt Dice</option>
+                                        <option value="Block Dice" {{#if (eq numeric_resolve.stat_or_status "Block Dice")}}selected{{/if}}>Block Dice</option>
+                                        <option value="Evade Dice" {{#if (eq numeric_resolve.stat_or_status "Evade Dice")}}selected{{/if}}>Evade Dice</option>
+                                    </optgroup>
+                                    <optgroup label="Statuses">
+                                        {{selectOptions ../../actor_statuses selected=numeric_resolve.stat_or_status}}
+                                    </optgroup>
+                                </select>
+                                {{#unless (or (eq numeric_resolve.stat_or_status "All Dice") (eq numeric_resolve.stat_or_status "Offensive Dice") (eq numeric_resolve.stat_or_status "Defensive Dice")
+                                            (eq numeric_resolve.stat_or_status "Slash Dice") (eq numeric_resolve.stat_or_status "Pierce Dice") (eq numeric_resolve.stat_or_status "Blunt Dice")
+                                            (eq numeric_resolve.stat_or_status "Block Dice") (eq numeric_resolve.stat_or_status "Evade Dice"))}}
+                                    <select name="system.updated_skill_modules.{{i}}.numeric_resolves.{{j}}.timing" style="width: 84px;">
+                                        <option value="immediately" {{#if (eq numeric_resolve.timing "immediately")}}selected{{/if}}>Immediately</option>
+                                        <option value="next scene" {{#if (eq numeric_resolve.timing "next scene")}}selected{{/if}}>Next Scene</option>
+                                    </select>
+                                {{/unless}}
+                            {{/each}}
+                            <a class="numeric_resolve-control add-numeric_resolve" data-mod-index="{{i}}" title="Add Effect"><i class="fas fa-plus"></i></a>
+                        {{else if (eq mod.resolved_effect "custom")}}
+                            <input type="text" title="Custom Effect" name="system.updated_skill_modules.{{i}}.custom_resolve" value="{{mod.custom_resolve}}" style="width: 256px">
+                        {{/if}}
+                    </div>
+                </li>
+            {{/each}}
+            <a class="skill_modules-control add-skill_modules" title="Add Skill Module"><i class="fas fa-plus"></i></a>
+        </ol>
+    <!-- Simple nested if/elses that display the skill_modules as plain text.   -->
+    {{else}}
+        {{#if systemData.skill_modules.mods}}
+            <span class="system.skill_modules.mods" style="width: 100%; height: auto; overflow-wrap: break-word; white-space: pre-line; color: white; font-size: 15px;">{{systemData.skill_modules.mods}}</span>
+            <br>
+        {{/if}}
+        {{#each systemData.updated_skill_modules as |mod i| }}
+            <span class="system.skill_modules.mods" style="width: 100%; height: auto; overflow-wrap: break-word; color: white; font-size: 15px;">
+                {{#if (ne mod.tag "[After Use]")}}
+                    {{#if (eq mod.tag "custom")}}
+                        <span style="color: #ffeb04">{{mod.custom_tag}}</span>
+                    {{else if (ne mod.tag "tagless")}}
+                        <span style="color: #ffeb04">{{mod.tag}}</span>
+                    {{/if}}
+                    {{#if (eq mod.resolved_effect "custom")}}
+                        {{mod.custom_resolve}}
+                    {{else}}
+                        {{#if (eq mod.resolved_effect "Spend")}}
+                        <!-- lookup (GOD I LOVE FINDING NEW HANDLEBARS (which really means I should look through them all and not be a scrub))
+                                anyways, lookup searches through actor_statuses (with ../ for scoping) and gets us the name of the {id: name} pair
+                                actually get the NAME of the status effect, instead of the id. Pretty cool!-->
+                            Spend {{mod.spend_resolve.value}}
+                            {{#if (lookup ../actor_statuses mod.spend_resolve.stat_or_status)}}
+                                {{lookup ../actor_statuses mod.spend_resolve.stat_or_status}}
+                            {{else}}
+                                {{mod.spend_resolve.stat_or_status}}
+                            {{/if}}
+                            to gain
+                        {{else}}
+                            {{mod.resolved_effect}}
+                        {{/if}}
+                        {{#each mod.numeric_resolves as |numeric_resolve j|}}
+                            {{#if j}}
+                                and
+                            {{/if}}
+                            {{numeric_resolve.value}} 
+                            {{#if (or (eq numeric_resolve.stat_or_status "All Dice") (eq numeric_resolve.stat_or_status "Offensive Dice") (eq numeric_resolve.stat_or_status "Defensive Dice")
+                                        (eq numeric_resolve.stat_or_status "Slash Dice") (eq numeric_resolve.stat_or_status "Pierce Dice") (eq numeric_resolve.stat_or_status "Blunt Dice")
+                                        (eq numeric_resolve.stat_or_status "Block Dice") (eq numeric_resolve.stat_or_status "Evade Dice"))}}
+                                <!-- Gabeny said if I didn't add punctuation she'd refuse to use the update... so here's the punctiation... repeated a few times...
+                                        This impelmentation uses last instead of a . after the each because it was adding a space and I didn't want to figure out how
+                                        to actually remove that space, though I'm sure it would be trivial if I spent the effort. Oh well, it's all O(1) -->
+                                <!-- Separate note, to gain power on all dice of a skill next scene makes no sense and I'm not coding it in. This is informed to 
+                                        the user by either reading this text or seeing that the system does not acknowledge that option. Actually, instead of being lazy
+                                        I'll just go up and prevent it from being an option at all if we're gaining power for the skill. Ignore me!-->
+                                {{#if mod.resolved_effect "Inflict"}}
+                                    {{#if @last}}
+                                        Power for {{numeric_resolve.stat_or_status}} on this skill.
+                                    {{else}}
+                                        Power for {{numeric_resolve.stat_or_status}} on this skill
+                                    {{/if}}
+                                {{else}}
+                                    {{#if @last}}
+                                        Power down for {{numeric_resolve.stat_or_status}} on the opposing skill.
+                                    {{else}}
+                                        Power down for {{numeric_resolve.stat_or_status}} on the opposing skill
+                                    {{/if}}
+                                {{/if}}
+                            <!-- It occurs to me now that it may be hard to interpret when we have something like "Gain 1 Strength and 2 Strength next scene"
+                                    when compared to "Gain 1 Strength immediately and 2 Strength next scene", but I didn't want "immediately" everywhere. It's implicit now.-->
+                            {{else if (lookup ../../actor_statuses numeric_resolve.stat_or_status)}}
+                                {{#if @last}}
+                                    {{#if (eq numeric_resolve.timing "immediately")}}
+                                        {{lookup ../../actor_statuses numeric_resolve.stat_or_status}}.
+                                    {{else}}
+                                        {{lookup ../../actor_statuses numeric_resolve.stat_or_status}} {{numeric_resolve.timing}}.
+                                    {{/if}}
+                                {{else}}
+                                    {{lookup ../../actor_statuses numeric_resolve.stat_or_status}}
+                                    {{#if (eq numeric_resolve.timing "next scene")}}
+                                        {{numeric_resolve.timing}}
+                                    {{/if}}
+                                {{/if}}
+                            {{else}}
+                                {{#if @last}}
+                                    {{#if (eq numeric_resolve.timing "immediately")}}
+                                        {{numeric_resolve.stat_or_status}}.
+                                    {{else}}
+                                        {{numeric_resolve.stat_or_status}} {{numeric_resolve.timing}}.
+                                    {{/if}}
+                                {{else}}
+                                    {{numeric_resolve.stat_or_status}}
+                                    {{#if (eq numeric_resolve.timing "next scene")}}
+                                        {{numeric_resolve.timing}}
+                                    {{/if}}
+                                {{/if}}
+                            {{/if}}
+                        {{/each}}
+                    {{/if}}
+                    <br>
+                {{/if}}
+            </span>
+        {{/each}}
+    {{/if}}
+</div>
+
+        </div>
+    </div>
+</form>
