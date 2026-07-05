@@ -95,24 +95,11 @@
                 </div>
                 <div class="skill_mods">
                     {{#if sheetEditMode}}
-                    <textarea type="text" name="system.skill_modules.mods" placeholder="[On Use] ...">{{systemData.skill_modules.mods}}</textarea>
+                    <textarea type="text" name="system.skill_modules.mods" placeholder="[On Use] ..." style="height: 112px;">{{systemData.skill_modules.mods}}</textarea>
                     {{else}}
                     <span class="system.skill_modules.mods" style="width: 100%; height: auto; overflow-wrap: break-word; white-space: pre-line; color: white;">{{systemData.skill_modules.mods}}</span>
                     {{/if}}
                 </div>
-                <!-- I have decided that separating skill modules into multiple textareas is silly! As such, they shall be grouped together for now.
-                <ol class="skill_mods">
-                    {{#each systemData.skill_modules.mods as |mods i| }}
-                    <li class="skill_modules-mods flexrow" data-skill_modules-mods="{{i}}">
-                        <textarea type="text" name="system.skill_modules.mods.{{i}}" placeholder="[On Use] ...">{{mods}}</textarea>
-                        <a class="skill_modules-control delete-skill_modules"><i class="fas fa-minus"></i></a>
-                    </li>
-                    {{/each}}
-                </ol>
-                <div class="skill_mod-header">
-                    <a class="skill_modules-control add-skill_modules"><i class="fas fa-plus"></i></a>
-                </div>
-                -->
             </div>
             <div class="dice_section">
                 <ol class="dice-die">
@@ -120,60 +107,60 @@
                     <li class="dice-die flexrow" data-dice-die="{{i}}">
                         <div class="dice_div">
                             {{#if ../sheetEditMode}}
-                            <!-- Editable version -->
-                            <a class="dice-control delete-dice" style="width:15px"><i class="fas fa-minus"></i></a>
-                            <select name="system.dice.die.{{i}}.type" style="width:120px">
-                                <option value="slash" {{#if (eq die.type "slash")}}selected{{/if}}>Slash</option>
-                                <option value="pierce" {{#if (eq die.type "pierce")}}selected{{/if}}>Pierce</option>
-                                <option value="blunt" {{#if (eq die.type "blunt")}}selected{{/if}}>Blunt</option>
-                                <option value="evade" {{#if (eq die.type "evade")}}selected{{/if}}>Evade</option>
-                                <option value="block" {{#if (eq die.type "block")}}selected{{/if}}>Block</option>
-                                <option value="counter-slash" {{#if (eq die.type "counter-slash")}}selected{{/if}}>Counter-Slash</option>
-                                <option value="counter-pierce" {{#if (eq die.type "counter-pierce")}}selected{{/if}}>Counter-Pierce</option>
-                                <option value="counter-blunt" {{#if (eq die.type "counter-blunt")}}selected{{/if}}>Counter-Blunt</option>
-                                <option value="counter-evade" {{#if (eq die.type "counter-evade")}}selected{{/if}}>Counter-Evade</option>
-                                <option value="counter-block" {{#if (eq die.type "counter-block")}}selected{{/if}}>Counter-Block</option>
-                            </select>
-                            <input type="text" name="system.dice.die.{{i}}.formula" value="{{die.formula}}" data-formula-editor style="width: 60px; margin-right: 5px;"/>
-                            <img src="systems/sotc/assets/sheets/skills/DiceSlotIcon.webp" class="skill-die-button rollable" data-index="{{i}}" alt="Roll" style="width: auto; height: 24px; cursor: pointer; vertical-align: middle;">
+                                <!-- Editable version -->
+                                    <!-- As I'm going through and redoing skill/dice modules, I cannot possibly be relieved enough that I don't have to modify the dice themselves.-->
+                                <a class="dice-control delete-dice" title="Remove Dice" style="width:15px"><i class="fas fa-minus"></i></a>
+                                <select name="system.dice.die.{{i}}.type" style="width:120px">
+                                    <option value="slash" {{#if (eq die.type "slash")}}selected{{/if}}>Slash</option>
+                                    <option value="pierce" {{#if (eq die.type "pierce")}}selected{{/if}}>Pierce</option>
+                                    <option value="blunt" {{#if (eq die.type "blunt")}}selected{{/if}}>Blunt</option>
+                                    <option value="evade" {{#if (eq die.type "evade")}}selected{{/if}}>Evade</option>
+                                    <option value="block" {{#if (eq die.type "block")}}selected{{/if}}>Block</option>
+                                    <option value="counter-slash" {{#if (eq die.type "counter-slash")}}selected{{/if}}>Counter-Slash</option>
+                                    <option value="counter-pierce" {{#if (eq die.type "counter-pierce")}}selected{{/if}}>Counter-Pierce</option>
+                                    <option value="counter-blunt" {{#if (eq die.type "counter-blunt")}}selected{{/if}}>Counter-Blunt</option>
+                                    <option value="counter-evade" {{#if (eq die.type "counter-evade")}}selected{{/if}}>Counter-Evade</option>
+                                    <option value="counter-block" {{#if (eq die.type "counter-block")}}selected{{/if}}>Counter-Block</option>
+                                </select>
+                                <input type="text" name="system.dice.die.{{i}}.formula" value="{{die.formula}}" data-formula-editor style="width: 60px; margin-right: 5px;"/>
+                                <img src="systems/sotc/assets/sheets/skills/DiceSlotIcon.webp" class="skill-die-button rollable" data-index="{{i}}" alt="Roll" style="width: auto; height: 24px; cursor: pointer; vertical-align: middle;">
                             {{else}}
-                            <!-- Read-only version -->
-                            <div class="displayed_dice">
-                                <img src="systems/sotc/assets/dice types/{{die.type}}.png" class="skill-die-button rollable" data-index="{{i}}" style="width: auto; height: 45px; border: none; cursor: pointer;"/>
-                                <div class="die-formula die-color-{{die.type}}" style="vertical-align: middle; margin-right: 5px;"><span>{{die.formula}}</span></div>
-                                <div class="displayed_dice_mods">
-                                    {{#each die.mods as |mods j| }}
-                                    <span class="system.dice.die.{{@../index}}.mods.{{j}}">{{mods}}</span>
-                                    {{/each}}
+                                <!-- Read-only version -->
+                                <div class="displayed_dice">
+                                    <img src="systems/sotc/assets/dice types/{{die.type}}.png" class="skill-die-button rollable" data-index="{{i}}" style="width: auto; height: 45px; border: none; cursor: pointer;"/>
+                                    <div class="die-formula die-color-{{die.type}}" style="vertical-align: middle; margin-right: 5px;"><span>{{die.formula}}</span></div>
+                                    <div class="displayed_dice_mods">
+                                        {{#each die.mods as |mods j| }}
+                                        <span class="system.dice.die.{{@../index}}.mods.{{j}}">{{mods}}</span>
+                                        {{/each}}
+                                    </div>
                                 </div>
-                            </div>
-                            
                             {{/if}}
                         </div>
                         {{#if ../sheetEditMode}}
-                        <div class="dice_mods_div">
-                            <a class="dice_modules-control add-dice_modules" style="margin-top: 11px; height: 20px;"><i class="fas fa-plus"></i></a>
-                            <ol class="dice_mods">
-                                {{#each die.mods as |mods j| }}
-                                <!-- Haha! I have conceived of an idea most ingenius! I will use {{@../index}} to refer to the outer loop's index i, and I will pass it to my js! -->
-                                <li class="dice_modules-mods flexrow" data-dice-mod="{{j}}" data-die-index="{{@../index}}">
-                                    <div class="dice_mod_div_inner">
-                                        <a class="dice_modules-control delete-dice_modules" style="width:15px; margin-right: 5px;"><i class="fas fa-minus"></i></a>
-                                        <input type="text" name="system.dice.die.{{@../index}}.mods.{{j}}" value="{{mods}}" placeholder="[Clash Win] ...">
-                                    </div>
-                                </li>
-                                {{/each}}
-                            </ol>
-                        </div>
+                            <div class="dice_mods_div">
+                                <a class="dice_modules-control add-dice_modules" title="Add Dice Module" style="margin-top: 11px; height: 20px;"><i class="fas fa-plus"></i></a>
+                                <ol class="dice_mods">
+                                    {{#each die.mods as |mod j| }}
+                                        <!-- Haha! I have conceived of an idea most ingenius! I will use {{@../index}} to refer to the outer loop's index i, and I will pass it to my js! -->
+                                        <li class="dice_modules-mods flexrow" data-dice-mod="{{j}}" data-die-index="{{@../index}}">
+                                            <div class="dice_mod_div_inner">
+                                                <a class="dice_modules-control delete-dice_modules" title="Remove Dice Module" style="width:15px; margin-right: 5px;"><i class="fas fa-minus"></i></a>
+                                                <input type="text" name="system.dice.die.{{@../index}}.mods.{{j}}" value="{{mod}}" placeholder="[Clash Win] ...">
+                                            </div>
+                                        </li>
+                                    {{/each}}
+                                </ol>
+                            </div>
                         {{/if}}
                     </li>
                     {{else}}
-                    <li><span>This Skill Has No Dice.</span></li>
+                        <li style="display: flex;"><div>This Skill Has No Dice.</div></li>
                     {{/each}}
                 </ol>
                 <h4 class="dice-header">
                     {{#if sheetEditMode}}
-                    <a class="dice-control add-dice"><i class="fas fa-plus"></i></a>
+                    <a class="dice-control add-dice" title="Add Dice"><i class="fas fa-plus"></i></a>
                     {{/if}}
                 </h4>
             </div>
