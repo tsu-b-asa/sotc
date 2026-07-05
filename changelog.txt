@@ -1,4 +1,4 @@
-Version 1.05
+Version 1.06
 This one has been a long time in the work, and simultaneously a very short burst of work as I found the time at long last.
 Lots of changes, organized as well as I could get them
 
