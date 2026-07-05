@@ -22,7 +22,10 @@
             <div class="char_abilities">
                 {{#each passives as |passive i| }}
                     {{#if (eq passive.system.type "biography")}}
-                        <div class="passive_card" data-item-id="{{passive._id}}">
+                        <div class="passive_card" data-item-id="{{passive._id}}" draggable="true">
+                            <div class="passive_drag_handle" data-drag="item">
+                                <i class="fas fa-grip-lines fa-rotate-90"></i>
+                            </div>
                             <div class="passive_left">
                                 <h4 class="passive_name" style="font-size: 16px; color: inherit; font-weight: bold; text-shadow:  black 1px 0 10px, black 1px 0 10px;">{{passive.name}}</h4>
                                 <div>
@@ -60,52 +63,122 @@
                     <div class="resource_summaries">
                         <div class="resource_summary">
                             <div class="resource" style="color: #ff5a39;">  
-                                <img src="systems/sotc/assets/sheets/HPIcon.webp" alt="HP Icon" style="width:auto; height:30px; border:none;">
-                                <input type="text" inputmode="numeric" name="system.health.value" value="{{systemData.health.value}}"/>
+                                <img src="systems/sotc/assets/sheets/HPIcon.webp" alt="HP Icon" title="HP" style="width:auto; height:30px; border:none;">
+                                <input type="text" inputmode="numeric" title="Current HP" name="system.health.value" value="{{systemData.health.value}}"/>
                                 <span> / </span>
-                                <input type="text" inputmode="numeric" name="system.health.max" value="{{systemData.health.max}}"/>
+                                <div class="derived_field">
+                                    {{#if (ne systemData.health.max systemData.health.raw)}}
+                                        <input class="raw_input" type="text" inputmode="numeric" title="Max HP" name="system.health.raw" value="{{systemData.health.raw}}"/>
+                                        <span class="derived_data"
+                                            {{#if (lt systemData.health.max systemData.health.raw)}} 
+                                                style="color:#DD0000; text-shadow: #000 0 0 5px, #000 0 0 5px;" 
+                                            {{else}} 
+                                                style="color:#000000; text-shadow: #fc0 0 0 5px, #fc0 0 0 5px, #fc0 0 0 5px, #fff 0 0 5px;"
+                                            {{/if}}>
+                                            {{systemData.health.max}}
+                                        </span>
+                                    {{else}}
+                                        <input type="text" inputmode="numeric" title="Max HP" name="system.health.raw" value="{{systemData.health.raw}}"/>
+                                    {{/if}}
+                                </div>
                             </div>
                             <div class="resource" style="color: #ffff39;">
-                                <img src="systems/sotc/assets/sheets/StaggerIcon.webp" alt="Stagger Icon" style="width:auto; height:30px; border:none">
-                                <input type="text" inputmode="numeric" name="system.stagger.value" value="{{systemData.stagger.value}}"/>
+                                <img src="systems/sotc/assets/sheets/StaggerIcon.webp" alt="Stagger Icon" title="Stagger" style="width:auto; height:30px; border:none">
+                                <input type="text" inputmode="numeric" title="Current Stagger" name="system.stagger.value" value="{{systemData.stagger.value}}"/>
                                 <span> / </span>
-                                <input type="text" inputmode="numeric" name="system.stagger.max" value="{{systemData.stagger.max}}"/>
+                                <div class="derived_field">
+                                    {{#if (ne systemData.stagger.max systemData.stagger.raw)}}
+                                        <input class="raw_input_2" type="text" inputmode="numeric" title="Max Stagger" name="system.stagger.raw" value="{{systemData.stagger.raw}}"/>
+                                        <span class="derived_data"
+                                            {{#if (lt systemData.stagger.max systemData.stagger.raw)}} 
+                                                style="color:#DD0000; text-shadow: #000 0 0 5px, #000 0 0 5px;" 
+                                            {{else}} 
+                                                style="color:#000000; text-shadow: #fc0 0 0 5px, #fc0 0 0 5px, #fc0 0 0 5px, #fff 0 0 5px;"
+                                            {{/if}}>
+                                            {{systemData.stagger.max}}
+                                        </span>
+                                    {{else}}
+                                        <input type="text" inputmode="numeric" title="Max Stagger" name="system.stagger.raw" value="{{systemData.stagger.raw}}"/>
+                                    {{/if}}
+                                </div>
                             </div>
                             <div class="resource">
-                                <img src="systems/sotc/assets/sheets/EmotionIcon.webp" alt="Emotion Icon" style="width:auto; height:30px; border:none">
-                                <input type="text" inputmode="numeric" name="system.emotion" value="{{systemData.emotion}}"/>
+                                <img src="systems/sotc/assets/sheets/EmotionIcon.webp" alt="Emotion Icon" title="Emotion" style="width:auto; height:30px; border:none">
+                                <input type="text" inputmode="numeric" title="Emotion" name="system.emotion" value="{{systemData.emotion}}"/>
                             </div>
                         </div>
                         <div class="resource_summary_2">
                             <div class="light_summary">
                                 <div class="resource">
-                                    <img src="systems/sotc/assets/sheets/LightIcon.webp" alt="Light Icon" style="width:auto; height:30px; border:none">
-                                    <input type="number" name="system.light.value" value="{{systemData.light.value}}"/>
+                                    <img src="systems/sotc/assets/sheets/LightIcon.webp" alt="Light Icon" title="Light" style="width:auto; height:30px; border:none">
+                                    <input type="number" title="Current Light"  name="system.light.value" value="{{systemData.light.value}}"/>
                                     <span> / </span>
-                                    <input type="number" name="system.light.max" value="{{systemData.light.max}}"/>
+                                    <div class="derived_field">
+                                        {{#if (ne systemData.light.max systemData.light.raw)}}
+                                            <input class="raw_input_2" type="text" inputmode="numeric" title="Max Light" name="system.light.raw" value="{{systemData.light.raw}}"/>
+                                            <span class="derived_data"
+                                                {{#if (lt systemData.light.max systemData.light.raw)}} 
+                                                    style="color:#DD0000; text-shadow: #000 0 0 5px, #000 0 0 5px;" 
+                                                {{else}} 
+                                                    style="color:#000000; text-shadow: #fc0 0 0 5px, #fc0 0 0 5px, #fc0 0 0 5px, #fff 0 0 5px;"
+                                                {{/if}}>
+                                                {{systemData.light.max}}
+                                            </span>
+                                        {{else}}
+                                            <input type="number" title="Max Light" name="system.light.raw" value="{{systemData.light.raw}}"/>
+                                        {{/if}}
+                                    </div>
                                 </div>
                                 <div class="resource">
-                                    <img src="systems/sotc/assets/sheets/LightGain.png" alt="Light Gain" style="width:auto; height:30px; border:none">
-                                    <input type="number" name="system.light.light_regen" value="{{systemData.light.light_regen}}"/>
+                                    <img src="systems/sotc/assets/sheets/LightGain.png" alt="Light Regen Icon" title="Light Regen" style="width:auto; height:30px; border:none">
+                                    <div class="derived_field">
+                                        {{#if systemData.modifiers.light_regen_mod}}
+                                            <input class="raw_input_3" type="number" title="Light Regen" name="system.light.light_regen" value="{{systemData.light.light_regen}}"/>
+                                            <span class="derived_data"
+                                                {{#if (lt systemData.modifiers.light_regen_mod 0)}} 
+                                                    style="color:#DD0000; text-shadow: #000 0 0 5px, #000 0 0 5px;" 
+                                                {{else}} 
+                                                    style="color:#000000; text-shadow: #fc0 0 0 5px, #fc0 0 0 5px, #fc0 0 0 5px, #fff 0 0 5px;"
+                                                {{/if}}>
+                                                {{systemData.modifiers.light_regen}}
+                                            </span>
+                                        {{else}}
+                                            <input type="number" title="Light Regen" name="system.light.light_regen" value="{{systemData.light.light_regen}}"/>
+                                        {{/if}}
+                                    </div>
                                 </div>
                             </div>
                             <div class="dice_summary">
                                 <div class="resource">
-                                    <img src="systems/sotc/assets/sheets/dice_num.webp" alt="Dice Number" style="width:auto; height:30px; border:none">
-                                    <input type="number" name="system.speed_dice.num_dice" value="{{systemData.speed_dice.num_dice}}"/>
+                                    <img src="systems/sotc/assets/sheets/dice_num.webp" alt="Dice Number" title="Number of Speed Dice" style="width:auto; height:30px; border:none">
+                                    <div class="derived_field">
+                                        {{#if systemData.modifiers.num_speed_dice_mod}}
+                                            <input class="raw_input_3"  type="number" title="Number of Speed Dice" name="system.speed_dice.num_dice" value="{{systemData.speed_dice.num_dice}}"/>
+                                            <span class="derived_data"
+                                                {{#if (lt systemData.modifiers.num_speed_dice_mod 0)}} 
+                                                    style="color:#DD0000; text-shadow: #000 0 0 5px, #000 0 0 5px;" 
+                                                {{else}} 
+                                                    style="color:#000000; text-shadow: #fc0 0 0 5px, #fc0 0 0 5px, #fc0 0 0 5px, #fff 0 0 5px;"
+                                                {{/if}}>
+                                                {{systemData.modifiers.num_speed_dice}}
+                                            </span>
+                                        {{else}}
+                                            <input type="number" title="Number of Speed Dice" name="system.speed_dice.num_dice" value="{{systemData.speed_dice.num_dice}}"/>
+                                        {{/if}}
+                                    </div>
                                 </div>
                                 <div class="resource">
-                                    <img src="systems/sotc/assets/sheets/dice_size.webp" alt="Dice Size" style="width:auto; height:30px; border:none">
-                                    <input type="text" name="system.speed_dice.dice_size" value="{{systemData.speed_dice.dice_size}}" style="width:60px"/>
+                                    <img src="systems/sotc/assets/sheets/dice_size.webp" alt="Dice Size" title="Speed Die Formula" style="width:auto; height:30px; border:none">
+                                    <input type="text" title="Speed Die Formula" name="system.speed_dice.dice_size" value="{{systemData.speed_dice.dice_size}}" style="width:60px"/>
                                 </div>
                             </div>
                         </div>
                         <div class="resource_summary_3">
                             <table class="affinities" style="border:none;">
                                 <tr>
-                                    <th style="width:30px; height:30px;"><img src="systems/sotc/assets/sheets/dres_slash.webp" alt="Slash Damage Resistance" style="width:30px; height:30px; border:none"></th>
+                                    <th style="width:30px; height:30px;"><img src="systems/sotc/assets/sheets/dres_slash.webp" alt="Slash Damage Resistance Icon" title="Slash Damage Resistance" style="width:30px; height:30px; border:none"></th>
                                     <th style="display:flex; align-items:center; justify-content:center;">
-                                        <input type="number" name="system.affinities.damage_slash" value="{{systemData.affinities.damage_slash}}" style="width:30%";>
+                                        <input type="number" title="Slash Damage Resistance" name="system.affinities.damage_slash" value="{{systemData.affinities.damage_slash}}" style="width:30%";>
                                         {{#if (ne systemData.modifiers.slash_damage_affinity systemData.affinities.damage_slash)}}
                                             <i class="fa-solid fa-arrow-right" style="margin-top: 2px; width: 20%;"></i>
                                             <span 
@@ -118,9 +191,9 @@
                                             </span>
                                         {{/if}}
                                     </th>
-                                    <th style="width:30px; height:30px;"><img src="systems/sotc/assets/sheets/sres_slash.webp" alt="Slash Stagger Resistance" style="width:30px; height:30px; border:none"></th>
+                                    <th style="width:30px; height:30px;"><img src="systems/sotc/assets/sheets/sres_slash.webp" alt="Slash Stagger Resistance Icon" title="Slash Stagger Resistance" style="width:30px; height:30px; border:none"></th>
                                     <th style="display:flex; align-items:center; justify-content:center;">
-                                        <input type="number" name="system.affinities.stagger_slash" value="{{systemData.affinities.stagger_slash}}" style="width:30%";>
+                                        <input type="number" title="Slash Stagger Resistance" name="system.affinities.stagger_slash" value="{{systemData.affinities.stagger_slash}}" style="width:30%";>
                                         {{#if (ne systemData.modifiers.slash_stagger_affinity systemData.affinities.stagger_slash)}}
                                             <i class="fa-solid fa-arrow-right" style="margin-top: 2px; width: 20%;"></i>
                                             <span 
@@ -135,9 +208,9 @@
                                     </th>
                                 </tr>
                                 <tr>
-                                    <th style="width:30px; height:30px;"><img src="systems/sotc/assets/sheets/dres_pierce.webp" alt="Pierce Damage Resistance" style="width:30px; height:30px; border:none"></th>
+                                    <th style="width:30px; height:30px;"><img src="systems/sotc/assets/sheets/dres_pierce.webp" alt="Pierce Damage Resistance Icon" title="Pierce Damage Resistance" style="width:30px; height:30px; border:none"></th>
                                     <th style="display:flex; align-items:center; justify-content:center;">
-                                        <input type="number" name="system.affinities.damage_pierce" value="{{systemData.affinities.damage_pierce}}" style="width:30%";>
+                                        <input type="number" title="Pierce Damage Resistance" name="system.affinities.damage_pierce" value="{{systemData.affinities.damage_pierce}}" style="width:30%";>
                                         {{#if (ne systemData.modifiers.pierce_damage_affinity systemData.affinities.damage_pierce)}}
                                             <i class="fa-solid fa-arrow-right" style="margin-top: 2px; width: 20%;"></i>
                                             <span 
@@ -150,9 +223,9 @@
                                             </span>
                                         {{/if}}
                                     </th>
-                                    <th style="width:30px; height:30px;"><img src="systems/sotc/assets/sheets/sres_pierce.webp" alt="Pierce Stagger Resistance" style="width:30px; height:30px; border:none"></th>
+                                    <th style="width:30px; height:30px;"><img src="systems/sotc/assets/sheets/sres_pierce.webp" alt="Pierce Stagger Resistance Icon" title="Pierce Stagger Resistance" style="width:30px; height:30px; border:none"></th>
                                     <th style="display:flex; align-items:center; justify-content:center;">
-                                        <input type="number" name="system.affinities.stagger_pierce" value="{{systemData.affinities.stagger_pierce}}" style="width:30%";>
+                                        <input type="number" title="Pierce Stagger Resistance" name="system.affinities.stagger_pierce" value="{{systemData.affinities.stagger_pierce}}" style="width:30%";>
                                         {{#if (ne systemData.modifiers.pierce_stagger_affinity systemData.affinities.stagger_pierce)}}
                                             <i class="fa-solid fa-arrow-right" style="margin-top: 2px; width: 20%;"></i>
                                             <span 
@@ -167,9 +240,9 @@
                                     </th>
                                 </tr>
                                 <tr>
-                                    <th style="width:30px; height:30px;"><img src="systems/sotc/assets/sheets/dres_blunt.webp" alt="Blunt Damage Resistance" style="width:30px; height:30px; border:none"></th>
+                                    <th style="width:30px; height:30px;"><img src="systems/sotc/assets/sheets/dres_blunt.webp" alt="Blunt Damage Resistance Icon" title="Blunt Damage Resistance" style="width:30px; height:30px; border:none"></th>
                                     <th style="display:flex; align-items:center; justify-content:center;">
-                                        <input type="number" name="system.affinities.damage_blunt" value="{{systemData.affinities.damage_blunt}}" style="width:30%";>
+                                        <input type="number" title="Blunt Damage Resistance" name="system.affinities.damage_blunt" value="{{systemData.affinities.damage_blunt}}" style="width:30%";>
                                         {{#if (ne systemData.modifiers.blunt_damage_affinity systemData.affinities.damage_blunt)}}
                                             <i class="fa-solid fa-arrow-right" style="margin-top: 2px; width: 20%;"></i>
                                             <span 
@@ -182,9 +255,9 @@
                                             </span>
                                         {{/if}}
                                     </th>
-                                    <th style="width:30px; height:30px;"><img src="systems/sotc/assets/sheets/sres_blunt.webp" alt="Blunt Stagger Resistance" style="width:30px; height:30px; border:none"></th>
+                                    <th style="width:30px; height:30px;"><img src="systems/sotc/assets/sheets/sres_blunt.webp" alt="Blunt Stagger Resistance Icon" title="Blunt Stagger Resistance" style="width:30px; height:30px; border:none"></th>
                                     <th style="display:flex; align-items:center; justify-content:center;">
-                                        <input type="number" name="system.affinities.stagger_blunt" value="{{systemData.affinities.stagger_blunt}}" style="width:30%";>
+                                        <input type="number" title="Blunt Stagger Resistance" name="system.affinities.stagger_blunt" value="{{systemData.affinities.stagger_blunt}}" style="width:30%";>
                                         {{#if (ne systemData.modifiers.blunt_stagger_affinity systemData.affinities.stagger_blunt)}}
                                             <i class="fa-solid fa-arrow-right" style="margin-top: 2px; width: 20%;"></i>
                                             <span 
@@ -203,65 +276,93 @@
                     </div>
                 </div>
             </div>
-            <div class="summary_data">
-                <div class="attributes">
-                    <table class="affinities" style="border:none;">
-                        <tr>
-                            <th><a class="attribute-label roll-might"><u>Might:</u></a></th>
-                            <th><input type="number" name="system.attribute.might.value" value="{{systemData.attribute.might.value}}"/></th>
-                        </tr>
-                        <tr>
-                            <th><a class="attribute-label roll-vitality"><u>Vitality:</u></a></th>
-                            <th><input type="number" name="system.attribute.vitality.value" value="{{systemData.attribute.vitality.value}}"/></th>
-                        </tr>
-                        <tr>
-                            <th><a class="attribute-label roll-agility"><u>Agility:</u></a></th>
-                            <th><input type="number" name="system.attribute.agility.value" value="{{systemData.attribute.agility.value}}"/></th>
-                        </tr>
-                        <tr>
-                            <th><a class="attribute-label roll-intellect"><u>Intellect:</u></a></th>
-                            <th><input type="number" name="system.attribute.intellect.value" value="{{systemData.attribute.intellect.value}}"/></th>
-                        </tr>
-                        <tr>
-                            <th><a class="attribute-label roll-instinct"><u>Instinct:</u></a></th>
-                            <th><input type="number" name="system.attribute.instinct.value" value="{{systemData.attribute.instinct.value}}"/></th>
-                        </tr>
-                        <tr>
-                            <th><a class="attribute-label roll-persona"><u>Persona:</u></a></th>
-                            <th><input type="number" name="system.attribute.persona.value" value="{{systemData.attribute.persona.value}}"/></th>
-                        </tr>
-                    </table>
-                    <hr style="border-color: #efc281; border-width: 1px;">
-                    <div class="misc_summary_data" style="font-weight: bold;"><span>Excellence:</span><input type="number" name="system.excellence" value="{{systemData.excellence}}"/></div>
-                    <div class="misc_summary_data" style="font-weight: bold;"><span>Injuries:</span><input type="number" name="system.injuries" value="{{systemData.injuries}}"/></div>
-                    <div class="misc_summary_data" style="font-weight: bold;"><span>Anxieties:</span><input type="number" name="system.anxieties" value="{{systemData.anxieties}}"/></div>
-                    <hr style="border-color: #efc281; border-width: 1px;">
-                    <div class="misc_summary_data" style="font-weight: bold;"><span>Level:</span><input type="number" name="system.level" value="{{systemData.level}}"/></div>
-                    <hr style="border-color: #efc281; border-width: 1px;">
-                    <div class="misc_summary_data" style="font-weight: bold;">Module Tracker</div>
-                    <div class="misc_summary_data">Rank 1:<input type="number" name="system.modules.rank_1.used" value="{{systemData.modules.rank_1.used}}"/>/<input type="number" name="system.modules.rank_1.max" value="{{systemData.modules.rank_1.max}}"/></div>
-                    <div class="misc_summary_data">Rank 2:<input type="number" name="system.modules.rank_2.used" value="{{systemData.modules.rank_2.used}}"/>/<input type="number" name="system.modules.rank_2.max" value="{{systemData.modules.rank_2.max}}"/></div>
-                    <div class="misc_summary_data">Rank 3:<input type="number" name="system.modules.rank_3.used" value="{{systemData.modules.rank_3.used}}"/>/<input type="number" name="system.modules.rank_3.max" value="{{systemData.modules.rank_3.max}}"/></div>
-                    <hr style="border-color: #efc281; border-width: 1px;">
-                    <div class="misc_summary_data" style="font-weight: bold;">
-                        <span style="text-align: center;">Initiative Type: </span>
-                        <select name="system.initiative_type" style="color: inherit">
-                            <option style="color: black" value="player" {{#if (eq systemData.initiative_type "player")}}selected{{/if}}>Player</option>
-                            <option style="color: black" value="npc" {{#if (eq systemData.initiative_type "npc")}}selected{{/if}}>Non-Player</option>
-                        </select>
+            {{#if (ne systemData.sheet_version "simplified")}}
+                <div class="summary_data">
+                    <div class="attributes">
+                        <table class="affinities" style="border:none;">
+                            <tr>
+                                <th><a class="attribute-label roll-might"><u>Might:</u></a></th>
+                                <th><input type="number" name="system.attribute.might.value" value="{{systemData.attribute.might.value}}"/></th>
+                            </tr>
+                            <tr>
+                                <th><a class="attribute-label roll-vitality"><u>Vitality:</u></a></th>
+                                <th><input type="number" name="system.attribute.vitality.value" value="{{systemData.attribute.vitality.value}}"/></th>
+                            </tr>
+                            <tr>
+                                <th><a class="attribute-label roll-agility"><u>Agility:</u></a></th>
+                                <th><input type="number" name="system.attribute.agility.value" value="{{systemData.attribute.agility.value}}"/></th>
+                            </tr>
+                            <tr>
+                                <th><a class="attribute-label roll-intellect"><u>Intellect:</u></a></th>
+                                <th><input type="number" name="system.attribute.intellect.value" value="{{systemData.attribute.intellect.value}}"/></th>
+                            </tr>
+                            <tr>
+                                <th><a class="attribute-label roll-instinct"><u>Instinct:</u></a></th>
+                                <th><input type="number" name="system.attribute.instinct.value" value="{{systemData.attribute.instinct.value}}"/></th>
+                            </tr>
+                            <tr>
+                                <th><a class="attribute-label roll-persona"><u>Persona:</u></a></th>
+                                <th><input type="number" name="system.attribute.persona.value" value="{{systemData.attribute.persona.value}}"/></th>
+                            </tr>
+                        </table>
+                        <hr style="border-color: #efc281; border-width: 1px;">
+                        <div class="misc_summary_data" style="font-weight: bold; gap: 0px;"><span>Excellence:</span><input type="number" name="system.excellence" value="{{systemData.excellence}}"/>/<input type="number" name="system.starting_excellence" value="{{systemData.starting_excellence}}"/></div>
+                        <div class="misc_summary_data" style="font-weight: bold;"><span>Injuries:</span><input type="number" name="system.injuries" value="{{systemData.injuries}}"/></div>
+                        <div class="misc_summary_data" style="font-weight: bold;"><span>Anxieties:</span><input type="number" name="system.anxieties" value="{{systemData.anxieties}}"/></div>
+                        <hr style="border-color: #efc281; border-width: 1px;">
+                        <div class="misc_summary_data" style="font-weight: bold;"><span>Level:</span><input type="number" name="system.level" value="{{systemData.level}}"/></div>
+                        <hr style="border-color: #efc281; border-width: 1px;">
+                        <div class="misc_summary_data" style="font-weight: bold;">Module Tracker</div>
+                        <div class="misc_summary_data">Rank 1:<input type="number" name="system.modules.rank_1.used" value="{{systemData.modules.rank_1.used}}"/>/<input type="number" name="system.modules.rank_1.max" value="{{systemData.modules.rank_1.max}}"/></div>
+                        <div class="misc_summary_data">Rank 2:<input type="number" name="system.modules.rank_2.used" value="{{systemData.modules.rank_2.used}}"/>/<input type="number" name="system.modules.rank_2.max" value="{{systemData.modules.rank_2.max}}"/></div>
+                        <div class="misc_summary_data">Rank 3:<input type="number" name="system.modules.rank_3.used" value="{{systemData.modules.rank_3.used}}"/>/<input type="number" name="system.modules.rank_3.max" value="{{systemData.modules.rank_3.max}}"/></div>
+                        <hr style="border-color: #efc281; border-width: 1px;">
+                    </div>
+                    <div class="battle_abilities">
+                        <input type="text" name="system.battle_ability_1.name" value="{{systemData.battle_ability_1.name}}" placeholder="Battle Ability 1" style="height:30px; width:100%"/>
+                        <div class="battle_editor_1">
+                            {{editor battle1HTML target="system.battle_ability_1.details" button=true editable=editable engine="prosemirror"}}
+                        </div>
+                        <input type="text" name="system.battle_ability_2.name" value="{{systemData.battle_ability_2.name}}" placeholder="Battle Ability 2" style="height:30px; width:100%"/>
+                        <div class="battle_editor_2">
+                            {{editor battle2HTML target="system.battle_ability_2.details" button=true editable=editable engine="prosemirror"}}
+                        </div>
                     </div>
                 </div>
-                <div class="battle_abilities">
-                    <input type="text" name="system.battle_ability_1.name" value="{{systemData.battle_ability_1.name}}" placeholder="Battle Ability 1" style="height:30px; width:100%"/>
-                    <div class="battle_editor_1">
-                        {{editor battle1HTML target="system.battle_ability_1.details" button=true editable=editable engine="prosemirror"}}
-                    </div>
-                    <input type="text" name="system.battle_ability_2.name" value="{{systemData.battle_ability_2.name}}" placeholder="Battle Ability 2" style="height:30px; width:100%"/>
-                    <div class="battle_editor_2">
-                        {{editor battle2HTML target="system.battle_ability_2.details" button=true editable=editable engine="prosemirror"}}
+            {{else}}
+                <hr style="width: 95%; border: 1px solid white;">
+                <div class="sheet_passives">
+                    {{#each passives as |passive i| }}
+                        {{#if (eq passive.system.type "passive")}}
+                            <div class="passive_card" data-item-id="{{passive._id}}" draggable="true">
+                                <div class="passive_drag_handle" data-drag="item">
+                                    <i class="fas fa-grip-lines fa-rotate-90"></i>
+                                </div>
+                                <div class="passive_left">
+                                    <h4 class="passive_name" style="font-size: 16px; color: inherit; font-weight: bold; text-shadow:  black 1px 0 10px, black 1px 0 10px;">{{passive.name}}</h4>
+                                    <div>
+                                        <a class="passive_card-control print-passive_card" style="margin-bottom: 4px;">Print Passive <i class="fas fa-print"></i></a>
+                                        <div class="edit_and_delete"> 
+                                            <a class="passive_card-control edit-passive_card"><i class="fas fa-edit"></i></a>
+                                            <a class="passive_card-control duplicate-passive_card"><i class="fas fa-clone"></i></a>
+                                            <a class="passive_card-control delete-passive_card"><i class="fas fa-trash"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="passive_right">
+                                    {{{passive.system.details}}}
+                                </div>
+                            </div>
+                            <hr style="width: 90%; border: 1px solid white; margin-top: 8px; margin-bottom: 8px; opacity: 0.5; margin-left: 5%">
+                        {{/if}}
+                    {{/each}}
+                    <div class="passive_card">
+                        <div class="passive_left" style="text-align: center;">
+                            <a class="passive_card-control add-passive_card" style="height: 40px; font-size: 20px;">Add Passive<br /><i class="fas fa-plus"></i></a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            {{/if}}
         </div>
 
         {{!-- Skills Tab --}}
@@ -314,7 +415,7 @@
         <div class="tab ego" data-group="primary" data-tab="ego">
             <div class="ego_list">
                 {{#each egos as |ego i| }}
-                    <div class="ego_container">
+                    <div class="ego_container" data-item-id="{{ego._id}}" draggable="true">
                         <input type="text" name="items.{{ego._id}}.system.risk" value="{{ego.system.risk}}" placeholder="ZAYIN..." style="height:10%; width:100%; border-color: black;"/>
                         <div class="skill_card" data-item-id="{{ego._id}}">
                             <div class="skill_mini_image_background">
@@ -325,7 +426,7 @@
                             </div>
                             <img class="skill_light_icon" src="systems/sotc/assets/sheets/LightIcon.webp">
                             <h4 class="skill_light_char">{{ego.system.light_cost}}</h4>
-                            <h4 class="skill_name_char" style="text-align: center; text-shadow: black 1px 0 10px, black 1px 0 10px;">{{ego.name}}</h4>
+                            <h4 class="skill_name_char" style="text-align: center; text-shadow: black 1px 0 10px, black 1px 0 10px; width: 70%;">{{ego.name}}</h4>
                             <div class="skill_roll_container" style="width: 50%; height: 50%;">
                                 <img src="systems/sotc/assets/sheets/dice_size.webp" class="skill_roll-button rollable" data-index="{{i}}" alt="Roll" style="width: auto; height: 40px; font-size: 40px; cursor: pointer; border: none;">
                             </div>
@@ -340,7 +441,17 @@
                             </div>
                         </div>
                         <input type="text" name="items.{{ego._id}}.system.passive_name" value="{{ego.system.passive_name}}" placeholder="EGO Passive" style="height:10%; width:100%; border-color: black;"/>
-                        <textarea name="items.{{ego._id}}.system.passive" placeholder="Details..." style="height: 40%">{{ego.system.passive}}</textarea>
+                        <div style="height: 40%; width: 100%; margin-bottom: 4px; position: relative;">
+                            <textarea name="items.{{ego._id}}.system.passive" placeholder="Details..." style="height:100%;">{{ego.system.passive}}</textarea>
+                            <label class="active_checkbox_label">
+                                <input type="checkbox" class="active_checkbox" name="items.{{ego._id}}.system.is_active" {{checked ego.system.is_active}} data-dtype="Boolean" title="Toggle EGO Passive as active/unactive.">
+                                <img class="active_checkmark" src="systems/sotc/assets/sheets/checkmark.svg">
+                            </label>
+                        </div>
+                        <a class="skill_card-control print-ego_passive" style="margin-bottom: 4px;">Print E.G.O Passive <i class="fas fa-print"></i></a>
+                        <div class="ego_drag_handle" data-drag="item">
+                            <i class="fas fa-grip-lines"></i>
+                        </div>
                     </div>
                 {{/each}}
                 <div class="ego_container">
@@ -393,7 +504,10 @@
                 <div class="buffs">
                     {{#each statuses as |status i| }}
                         {{#if (eq status.system.types "buff")}}
-                            <div class="status_card" data-item-id="{{status._id}}">
+                            <div class="status_card" data-item-id="{{status._id}}" draggable="true">
+                                <div class="status_drag_handle" data-drag="item">
+                                    <i class="fas fa-grip-lines fa-rotate-270"></i>
+                                </div>
                                 <div class="status_mini_image">
                                     <img class="status_mini_image" src="{{status.img}}" title="{{status.name}}"/>
                                 </div>
@@ -437,7 +551,32 @@
                                         {{/if}}
                                         {{#if (eq status.system.condition "passive")}}
                                             <div class="status_passive_effect">
-                                                {{status.system.effect}} {{status.system.target}} by {{status.system.potency_flat}} flat, and by {{status.system.potency}} per count.
+                                                {{#each status.system.passive_effects as |passive_effect|}}
+                                                    {{#if @last}}
+                                                        {{#unless @first}}
+                                                            and
+                                                        {{/unless}}
+                                                    {{/if}}
+                                                    {{passive_effect.effect}} {{passive_effect.target}}
+                                                    {{#if passive_effect.potency_flat}}
+                                                        by {{passive_effect.potency_flat}}
+                                                        {{#if passive_effect.potency}}
+                                                            flat, and
+                                                        {{else if @last}}
+                                                            flat.
+                                                        {{else}}
+                                                            flat,
+                                                        {{/if}}
+                                                    {{/if}}
+                                                    {{#if passive_effect.potency}}
+                                                        {{#if @last}}
+                                                            by {{passive_effect.potency}} per count.
+                                                        {{else}}
+                                                            by {{passive_effect.potency}} per count,
+                                                        {{/if}}
+                                                    {{/if}}
+                                                {{/each}}
+                                                <!--{{status.system.effect}} {{status.system.target}} by {{status.system.potency_flat}} flat, and by {{status.system.potency}} per count. -->
                                             </div>
                                         {{/if}}
                                         {{#if (eq status.system.condition "special")}}
@@ -471,7 +610,7 @@
                 <div class="debuffs">
                     {{#each statuses as |status i| }}
                         {{#if (eq status.system.types "debuff")}}
-                            <div class="status_card" data-item-id="{{status._id}}">
+                            <div class="status_card" data-item-id="{{status._id}}" draggable="true">
                                 <div class="status_mini_image">
                                     <img class="status_mini_image" src="{{status.img}}" title="{{status.name}}"/>
                                 </div>
@@ -515,7 +654,31 @@
                                         {{/if}}
                                         {{#if (eq status.system.condition "passive")}}
                                             <div class="status_passive_effect">
-                                                {{status.system.effect}} {{status.system.target}} by {{status.system.potency_flat}} flat, and by {{status.system.potency}} per count.
+                                                {{#each status.system.passive_effects as |passive_effect|}}
+                                                    {{#if @last}}
+                                                        {{#unless @first}}
+                                                            and
+                                                        {{/unless}}
+                                                    {{/if}}
+                                                    {{passive_effect.effect}} {{passive_effect.target}}
+                                                    {{#if passive_effect.potency_flat}}
+                                                        by {{passive_effect.potency_flat}}
+                                                        {{#if passive_effect.potency}}
+                                                            flat, and
+                                                        {{else if @last}}
+                                                            flat.
+                                                        {{else}}
+                                                            flat,
+                                                        {{/if}}
+                                                    {{/if}}
+                                                    {{#if passive_effect.potency}}
+                                                        {{#if @last}}
+                                                            by {{passive_effect.potency}} per count.
+                                                        {{else}}
+                                                            by {{passive_effect.potency}} per count,
+                                                        {{/if}}
+                                                    {{/if}}
+                                                {{/each}}
                                             </div>
                                         {{/if}}
                                         {{#if (eq status.system.condition "special")}}
@@ -538,6 +701,9 @@
                                         <a class="status_card-control delete-status_card"><i class="fas fa-trash"></i></a>
                                     </div>
                                 </div>
+                                <div class="status_drag_handle" data-drag="item">
+                                    <i class="fas fa-grip-lines fa-rotate-270"></i>
+                                </div>
                             </div>
                         {{/if}}
                     {{/each}}
@@ -551,7 +717,10 @@
                 <div class="boons">
                     {{#each statuses as |status i| }}
                         {{#if (eq status.system.types "boon")}}
-                            <div class="status_card" data-item-id="{{status._id}}">
+                            <div class="status_card" data-item-id="{{status._id}}" draggable="true">
+                                <div class="status_drag_handle" data-drag="item">
+                                    <i class="fas fa-grip-lines fa-rotate-270"></i>
+                                </div>
                                 <div class="status_mini_image">
                                     <img class="status_mini_image" src="{{status.img}}" title="{{status.name}}"/>
                                 </div>
@@ -595,7 +764,31 @@
                                         {{/if}}
                                         {{#if (eq status.system.condition "passive")}}
                                             <div class="status_passive_effect">
-                                                {{status.system.effect}} {{status.system.target}} by {{status.system.potency_flat}} flat, and by {{status.system.potency}} per count.
+                                                {{#each status.system.passive_effects as |passive_effect|}}
+                                                    {{#if @last}}
+                                                        {{#unless @first}}
+                                                            and
+                                                        {{/unless}}
+                                                    {{/if}}
+                                                    {{passive_effect.effect}} {{passive_effect.target}}
+                                                    {{#if passive_effect.potency_flat}}
+                                                        by {{passive_effect.potency_flat}}
+                                                        {{#if passive_effect.potency}}
+                                                            flat, and
+                                                        {{else if @last}}
+                                                            flat.
+                                                        {{else}}
+                                                            flat,
+                                                        {{/if}}
+                                                    {{/if}}
+                                                    {{#if passive_effect.potency}}
+                                                        {{#if @last}}
+                                                            by {{passive_effect.potency}} per count.
+                                                        {{else}}
+                                                            by {{passive_effect.potency}} per count,
+                                                        {{/if}}
+                                                    {{/if}}
+                                                {{/each}}
                                             </div>
                                         {{/if}}
                                         {{#if (eq status.system.condition "special")}}
@@ -629,7 +822,7 @@
                 <div class="ailments">
                     {{#each statuses as |status i| }}
                         {{#if (eq status.system.types "ailment")}}
-                            <div class="status_card" data-item-id="{{status._id}}">
+                            <div class="status_card" data-item-id="{{status._id}}" draggable="true">
                                 <div class="status_mini_image">
                                     <img class="status_mini_image" src="{{status.img}}" title="{{status.name}}"/>
                                 </div>
@@ -673,7 +866,31 @@
                                         {{/if}}
                                         {{#if (eq status.system.condition "passive")}}
                                             <div class="status_passive_effect">
-                                                {{status.system.effect}} {{status.system.target}} by {{status.system.potency_flat}} flat, and by {{status.system.potency}} per count.
+                                                {{#each status.system.passive_effects as |passive_effect|}}
+                                                    {{#if @last}}
+                                                        {{#unless @first}}
+                                                            and
+                                                        {{/unless}}
+                                                    {{/if}}
+                                                    {{passive_effect.effect}} {{passive_effect.target}}
+                                                    {{#if passive_effect.potency_flat}}
+                                                        by {{passive_effect.potency_flat}}
+                                                        {{#if passive_effect.potency}}
+                                                            flat, and
+                                                        {{else if @last}}
+                                                            flat.
+                                                        {{else}}
+                                                            flat,
+                                                        {{/if}}
+                                                    {{/if}}
+                                                    {{#if passive_effect.potency}}
+                                                        {{#if @last}}
+                                                            by {{passive_effect.potency}} per count.
+                                                        {{else}}
+                                                            by {{passive_effect.potency}} per count,
+                                                        {{/if}}
+                                                    {{/if}}
+                                                {{/each}}
                                             </div>
                                         {{/if}}
                                         {{#if (eq status.system.condition "special")}}
@@ -696,6 +913,9 @@
                                         <a class="status_card-control delete-status_card"><i class="fas fa-trash"></i></a>
                                     </div>
                                 </div>
+                                <div class="status_drag_handle" data-drag="item">
+                                    <i class="fas fa-grip-lines fa-rotate-270"></i>
+                                </div>
                             </div>
                         {{/if}}
                     {{/each}}
@@ -709,7 +929,10 @@
                 <div class="other">
                     {{#each statuses as |status i| }}
                         {{#if (eq status.system.types "other")}}
-                            <div class="status_card" data-item-id="{{status._id}}">
+                            <div class="status_card" data-item-id="{{status._id}}" draggable="true">
+                                <div class="status_drag_handle" data-drag="item">
+                                    <i class="fas fa-grip-lines fa-rotate-270"></i>
+                                </div>
                                 <div class="status_mini_image">
                                     <img class="status_mini_image" src="{{status.img}}" title="{{status.name}}"/>
                                 </div>
@@ -753,7 +976,31 @@
                                         {{/if}}
                                         {{#if (eq status.system.condition "passive")}}
                                             <div class="status_passive_effect">
-                                                {{status.system.effect}} {{status.system.target}} by {{status.system.potency_flat}} flat, and by {{status.system.potency}} per count.
+                                                {{#each status.system.passive_effects as |passive_effect|}}
+                                                    {{#if @last}}
+                                                        {{#unless @first}}
+                                                            and
+                                                        {{/unless}}
+                                                    {{/if}}
+                                                    {{passive_effect.effect}} {{passive_effect.target}}
+                                                    {{#if passive_effect.potency_flat}}
+                                                        by {{passive_effect.potency_flat}}
+                                                        {{#if passive_effect.potency}}
+                                                            flat, and
+                                                        {{else if @last}}
+                                                            flat.
+                                                        {{else}}
+                                                            flat,
+                                                        {{/if}}
+                                                    {{/if}}
+                                                    {{#if passive_effect.potency}}
+                                                        {{#if @last}}
+                                                            by {{passive_effect.potency}} per count.
+                                                        {{else}}
+                                                            by {{passive_effect.potency}} per count,
+                                                        {{/if}}
+                                                    {{/if}}
+                                                {{/each}}
                                             </div>
                                         {{/if}}
                                         {{#if (eq status.system.condition "special")}}
@@ -786,16 +1033,44 @@
             </div>
         </div>
 
+        {{!-- EGO Tab --}}
+        <div class="tab settings" data-group="primary" data-tab="settings" style="font-weight: bold; margin-left: 16px; margin-top: 8px; display: flex; flex-flow: column; gap: 4px;">
+            <div>
+                <span style="text-align: center;">Initiative Type: </span>
+                <select name="system.initiative_type" style="color: inherit">
+                    <option style="color: black" value="player" {{#if (eq systemData.initiative_type "player")}}selected{{/if}}>Player</option>
+                    <option style="color: black" value="npc" {{#if (eq systemData.initiative_type "npc")}}selected{{/if}}>Non-Player</option>
+                </select>
+            </div>
+            <div>
+                <span style="text-align: center;">Sheet Style: </span>
+                <select name="system.sheet_version" style="color: inherit">
+                    <option style="color: black" value="full" {{#if (eq systemData.sheet_version "full")}}selected{{/if}}>Full</option>
+                    <option style="color: black" value="simplified" {{#if (eq systemData.sheet_version "simplified")}}selected{{/if}}>Simplified</option>
+                </select>
+            </div>
+            <div>
+                <span style="text-align: center;">Status Print Style: </span>
+                <select name="system.status_print_style" style="color: inherit">
+                    <option style="color: black" value="full" {{#if (eq systemData.status_print_style "full")}}selected{{/if}}>Normal Print</option>
+                    <option style="color: black" value="special_only" {{#if (eq systemData.status_print_style "special_only")}}selected{{/if}}>Special Details / Flavour Text Only</option>
+                </select>
+            </div>
+        </div>
     </section>
 
     {{!-- Sheet Tab Navigation --}}
-    <nav class="sheet-tabs tabs" data-group="primary" style="color: #efc281;">
+    <nav class="sheet-tabs tabs" data-group="primary" style="color: #efc281; position: relative;">
         <a class="item" data-tab="summary" style="color: #efc281;">Summary</a>
         <a class="item" data-tab="skills" style="color: #efc281;">Skills</a>
         <a class="item" data-tab="ego" style="color: #efc281;">EGO</a>
-        <a class="item" data-tab="statuses" style="color: #efc281;">Statuses</a>
-        <a class="item" data-tab="passives" style="color: #efc281;">Passives</a>
-        <a class="item" data-tab="biography" style="color: #efc281;">Biography</a>
+        {{#if (ne systemData.sheet_version "simplified")}}
+            <a class="item" data-tab="statuses" style="color: #efc281;">Statuses</a>
+            <a class="item" data-tab="passives" style="color: #efc281;">Passives</a>
+            <a class="item" data-tab="biography" style="color: #efc281; margin-right: 32px;">Biography</a>
+        {{else}}
+            <a class="item" data-tab="statuses" style="color: #efc281; margin-right: 32px;">Statuses</a>
+        {{/if}}
+        <a class="item" data-tab="settings" style="color: #efc281; position: absolute; right: 0px;" title="Settings"><i class="fa-solid fa-gears"></i></a>
     </nav>
-
 </form>
