@@ -1340,9 +1340,10 @@
 .chat-message.sotc_roll .message-content {
     color: #efc281;
 }
-.chat-message {
-  background-image: url(../assets/sheets/sheet_background_two.png);
-  background-color: rgba(0, 0, 0, 0.65);
+.chat-message,
+.chat-message.whisper {
+  background-image: url(../assets/sheets/sheet_background_two.png) !important;
+  background-color: rgba(0, 0, 0, 0.65) !important;
 }
 .chat-message .message-header {
     color: #efc281;
@@ -1351,6 +1352,16 @@
     color: #efc281;
 }
 .chat-message .message-content .h3 {
+  color: white;
+  text-shadow: 0 0 5px #efc281, 0 0 5px #efc281;
+}
+.chat-messagee.whisper .message-header {
+    color: #efc281;
+}
+.chat-messagee.whisper .message-content {
+    color: #efc281;
+}
+.chat-messagee.whisper .message-content .h3 {
   color: white;
   text-shadow: 0 0 5px #efc281, 0 0 5px #efc281;
 }
