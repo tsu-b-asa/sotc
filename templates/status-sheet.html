@@ -21,6 +21,7 @@
                     <select name="system.condition">
                         <option value="" {{#if (eq systemData.condition "")}}selected{{/if}}></option>
                         <option value="active" {{#if (eq systemData.condition "active")}}selected{{/if}}>On Trigger</option>
+                        <!-- <option value="bleed_like" {{#if (eq systemData.condition "bleed_like")}}selected{{/if}}>Bleed-like</option> -->
                         <option value="passive" {{#if (eq systemData.condition "passive")}}selected{{/if}}>Passively</option>
                         <option value="special" {{#if (eq systemData.condition "special")}}selected{{/if}}>Special</option>
                         <option value="stagger_like" {{#if (eq systemData.condition "stagger_like")}}selected{{/if}}>Stagger-like</option>
@@ -28,54 +29,105 @@
                     </select>
                     {{#if systemData.condition}}
                         {{#if (and (ne systemData.condition "special") (ne systemData.condition "stagger_like"))}}
-                            <select name="system.effect">
-                                <option value="Increase" {{#if (eq systemData.effect "Increase")}}selected{{/if}}>Increase</option>
-                                <option value="Decrease" {{#if (eq systemData.effect "Decrease")}}selected{{/if}}>Decrease</option>
-                            </select>
-                            <select name="system.target">
-                                {{#if (eq systemData.condition "active")}}
+                            {{#if (eq systemData.condition "passive")}}
+                                {{#each systemData.passive_effects as |passive_effect i| }}
+                                    {{#unless @first}}
+                                        <a class="passive_effect-control remove-passive_effect" title="Remove Passive Effect" data-passive-index="{{i}}">and</a>
+                                    {{/unless}}
+                                    <select name="system.passive_effects.{{i}}.effect">
+                                        <option value="Increase" {{#if (eq passive_effect.effect "Increase")}}selected{{/if}}>Increase</option>
+                                        <option value="Decrease" {{#if (eq passive_effect.effect "Decrease")}}selected{{/if}}>Decrease</option>
+                                    </select>
+                                    <select name="system.passive_effects.{{i}}.target" style="width:220px; margin-bottom: 2px;">
+                                        <option value="" {{#if (eq passive_effect.target "")}}selected{{/if}}></option>
+                                        <option value="all dice power" {{#if (eq passive_effect.target "all dice power")}}selected{{/if}}>All Dice Power</option>
+                                        <option value="all non-counter dice power" {{#if (eq passive_effect.target "all non-counter dice power")}}selected{{/if}}>All Non-Counter Dice Power</option>
+                                        <option value="offensive power" {{#if (eq passive_effect.target "offensive power")}}selected{{/if}}>Offensive Dice Power</option>
+                                        <option value="non-counter offensive power" {{#if (eq passive_effect.target "non-counter offensive power")}}selected{{/if}}>Non-Counter Offensive Dice Power</option>
+                                        <option value="defensive power" {{#if (eq passive_effect.target "defensive power")}}selected{{/if}}>Defensive Dice Power</option>
+                                        <option value="non-counter defensive power" {{#if (eq passive_effect.target "non-counter defensive power")}}selected{{/if}}>Non-Counter Defensive Dice Power</option>
+                                        <option value="slash power" {{#if (eq passive_effect.target "slash power")}}selected{{/if}}>Slash Dice Power</option>
+                                        <option value="pierce power" {{#if (eq passive_effect.target "pierce power")}}selected{{/if}}>Pierce Dice Power</option>
+                                        <option value="blunt power" {{#if (eq passive_effect.target "blunt power")}}selected{{/if}}>Blunt Dice Power</option>
+                                        <option value="block power" {{#if (eq passive_effect.target "block power")}}selected{{/if}}>Block Dice Power</option>
+                                        <option value="evade power" {{#if (eq passive_effect.target "evade power")}}selected{{/if}}>Evade Dice Power</option>
+                                        <option value="damage affinities" {{#if (eq passive_effect.target "damage affinities")}}selected{{/if}}>Damage Affinity</option>
+                                        <option value="stagger affinities" {{#if (eq passive_effect.target "stagger affinities")}}selected{{/if}}>Stagger Affinity</option>
+                                        <option value="damage and stagger affinities" {{#if (eq passive_effect.target "damage and stagger affinities")}}selected{{/if}}>Damage & Stagger Affinity</option>
+                                        <option value="slash damage affinity" {{#if (eq passive_effect.target "slash damage affinity")}}selected{{/if}}>Slash Damage Affinity</option>
+                                        <option value="slash stagger affinity" {{#if (eq passive_effect.target "slash stagger affinity")}}selected{{/if}}>Slash Stagger Affinity</option>
+                                        <option value="slash damage and stagger affinity" {{#if (eq passive_effect.target "slash damage and stagger affinity")}}selected{{/if}}>Slash Damage & Stagger Affinity</option>
+                                        <option value="pierce damage affinity" {{#if (eq passive_effect.target "pierce damage affinity")}}selected{{/if}}>Pierce Damage Affinity</option>
+                                        <option value="pierce stagger affinity" {{#if (eq passive_effect.target "pierce stagger affinity")}}selected{{/if}}>Pierce Stagger Affinity</option>
+                                        <option value="pierce damage and stagger affinity" {{#if (eq passive_effect.target "pierce damage and stagger affinity")}}selected{{/if}}>Pierce Damage & Stagger Affinity</option>
+                                        <option value="blunt damage affinity" {{#if (eq passive_effect.target "blunt damage affinity")}}selected{{/if}}>Blunt Damage Affinity</option>
+                                        <option value="blunt stagger affinity" {{#if (eq passive_effect.target "blunt stagger affinity")}}selected{{/if}}>Blunt Stagger Affinity</option>
+                                        <option value="blunt damage and stagger affinity" {{#if (eq passive_effect.target "blunt damage and stagger affinity")}}selected{{/if}}>Blunt Damage & Stagger Affinity</option>
+                                        <option value="speed" {{#if (eq passive_effect.target "speed")}}selected{{/if}}>Speed Dice Modifier</option>
+                                        <option value="number of speed dice" {{#if (eq passive_effect.target "number of speed dice")}}selected{{/if}}>Number of Speed Dice</option>
+                                        <option value="max hp" {{#if (eq passive_effect.target "max hp")}}selected{{/if}}>Maximum Hit Points</option>
+                                        <option value="max stagger resistance" {{#if (eq passive_effect.target "max stagger resistance")}}selected{{/if}}>Maximum Stagger Resistance</option>
+                                        <option value="max light" {{#if (eq passive_effect.target "max light")}}selected{{/if}}>Maximum Light</option>
+                                        <option value="light regen" {{#if (eq passive_effect.target "light regen")}}selected{{/if}}>Light Regen</option>
+                                    </select>
+                                    <span>by </span>
+                                    <input type="number" name="system.passive_effects.{{i}}.potency_flat" value="{{passive_effect.potency_flat}}" style="width: 32px; text-align: center;"/>
+                                    <span>flat, and by </span>
+                                    <input type="number" name="system.passive_effects.{{i}}.potency" value="{{passive_effect.potency}}" style="width: 32px; text-align: center;"/>
+                                    {{#if @last}}
+                                        <span>per status count.</span>
+                                    {{else}}
+                                        <span>per status count</span>
+                                    {{/if}}
+                                {{/each}}
+                                <a class="passive_effect-control add-passive_effect" title="Add Passive Effect" style="margin-left: 4px;"><i class="fas fa-plus"></i></a>
+                            {{else}}
+                                <select name="system.effect">
+                                    <option value="Increase" {{#if (eq systemData.effect "Increase")}}selected{{/if}}>Increase</option>
+                                    <option value="Decrease" {{#if (eq systemData.effect "Decrease")}}selected{{/if}}>Decrease</option>
+                                </select>
+                                <select name="system.target">
                                     <option value="hp" {{#if (eq systemData.target "hp")}}selected{{/if}}>Hit Points</option>
                                     <option value="stagger" {{#if (eq systemData.target "stagger")}}selected{{/if}}>Stagger Resistance</option>
                                     <option value="hp_stagger" {{#if (eq systemData.target "hp_stagger")}}selected{{/if}}>Hit Points & Stagger Resistance</option>
-                                {{else}}
-                                    <option value="" {{#if (eq systemData.target "")}}selected{{/if}}></option>
-                                    <option value="all dice power" {{#if (eq systemData.target "all dice power")}}selected{{/if}}>All Dice Power</option>
-                                    <option value="offensive power" {{#if (eq systemData.target "offensive power")}}selected{{/if}}>Offensive Dice Power</option>
-                                    <option value="defensive power" {{#if (eq systemData.target "defensive power")}}selected{{/if}}>Defensive Dice Power</option>
-                                    <option value="slash power" {{#if (eq systemData.target "slash power")}}selected{{/if}}>Slash Dice Power</option>
-                                    <option value="pierce power" {{#if (eq systemData.target "pierce power")}}selected{{/if}}>Pierce Dice Power</option>
-                                    <option value="blunt power" {{#if (eq systemData.target "blunt power")}}selected{{/if}}>Blunt Dice Power</option>
-                                    <option value="block power" {{#if (eq systemData.target "block power")}}selected{{/if}}>Block Dice Power</option>
-                                    <option value="evade power" {{#if (eq systemData.target "evade power")}}selected{{/if}}>Evade Dice Power</option>
-                                    <option value="damage affinities" {{#if (eq systemData.target "damage affinities")}}selected{{/if}}>Damage Affinity</option>
-                                    <option value="stagger affinities" {{#if (eq systemData.target "stagger affinities")}}selected{{/if}}>Stagger Affinity</option>
-                                    <option value="damage and stagger affinities" {{#if (eq systemData.target "damage and stagger affinities")}}selected{{/if}}>Damage & Stagger Affinity</option>
-                                    <option value="slash damage affinity" {{#if (eq systemData.target "slash damage affinity")}}selected{{/if}}>Slash Damage Affinity</option>
-                                    <option value="slash stagger affinity" {{#if (eq systemData.target "slash stagger affinity")}}selected{{/if}}>Slash Stagger Affinity</option>
-                                    <option value="slash damage and stagger affinity" {{#if (eq systemData.target "slash damage and stagger affinity")}}selected{{/if}}>Slash Damage & Stagger Affinity</option>
-                                    <option value="pierce damage affinity" {{#if (eq systemData.target "pierce damage affinity")}}selected{{/if}}>Pierce Damage Affinity</option>
-                                    <option value="pierce stagger affinity" {{#if (eq systemData.target "pierce stagger affinity")}}selected{{/if}}>Pierce Stagger Affinity</option>
-                                    <option value="pierce damage and stagger affinity" {{#if (eq systemData.target "pierce damage and stagger affinity")}}selected{{/if}}>Pierce Damage & Stagger Affinity</option>
-                                    <option value="blunt damage affinity" {{#if (eq systemData.target "blunt damage affinity")}}selected{{/if}}>Blunt Damage Affinity</option>
-                                    <option value="blunt stagger affinity" {{#if (eq systemData.target "blunt stagger affinity")}}selected{{/if}}>Blunt Stagger Affinity</option>
-                                    <option value="blunt damage and stagger affinity" {{#if (eq systemData.target "blunt damage and stagger affinity")}}selected{{/if}}>Blunt Damage & Stagger Affinity</option>
-                                    <option value="speed" {{#if (eq systemData.target "speed")}}selected{{/if}}>Speed Dice Modifier</option>
-                                    <option value="number of speed dice" {{#if (eq systemData.target "number of speed dice")}}selected{{/if}}>Number of Speed Dice</option>
-                                    <option value="max hp" {{#if (eq systemData.target "max hp")}}selected{{/if}}>Maximum Hit Points</option>
-                                    <option value="max stagger resistance" {{#if (eq systemData.target "max stagger resistance")}}selected{{/if}}>Maximum Stagger Resistance</option>
-                                    <option value="max light" {{#if (eq systemData.target "max light")}}selected{{/if}}>Maximum Light</option>
-                                    <option value="light regen" {{#if (eq systemData.target "light regen")}}selected{{/if}}>Light Regen</option>
-                                {{/if}}
-                            </select>
-                            <span>by </span>
-                            <input type="number" name="system.potency_flat" value="{{systemData.potency_flat}}" style="width: 32px; text-align: center;"/>
-                            <span>flat, and by </span>
-                            <input type="number" name="system.potency" value="{{systemData.potency}}" style="width: 32px; text-align: center;"/>
-                            <span>per status count.</span>
+                                </select>
+                                <span>by </span>
+                                <input type="number" name="system.potency_flat" value="{{systemData.potency_flat}}" style="width: 32px; text-align: center;"/>
+                                <span>flat, and by </span>
+                                <input type="number" name="system.potency" value="{{systemData.potency}}" style="width: 32px; text-align: center;"/>
+                                <span>per status count, to a minimum of</span>
+                                <input type="number" name="system.min_stat" value="{{systemData.min_stat}}" style="width: 32px; text-align: center; margin-top: 2px;"/>
+                                <span>HP/Stagger.</span>
+                                <i class="fa-regular fa-circle-info" title="Minimum HP/Stagger applies to all triggers except Sinking Deluge." style="margin-left: 4px;"></i>
+                            {{/if}}
                         {{/if}}
-                        {{#if (eq systemData.condition "active")}}
+                        <!-- 
+                        {{#if (eq systemData.condition "bleed_like")}}
+                            <div class="bleed_like_buttons">
+                                <span>Trigger this status effect</span>
+                                <select name="system.bleed_like.condition">
+                                    <option value="off_die" {{#if (eq systemData.bleed_like.condition "off_die")}}selected{{/if}}>When Rolling an Offensive Die</option>
+                                    <option value="def_die" {{#if (eq systemData.bleed_like.condition "def_die")}}selected{{/if}}>When Rolling an Defensive Die</option>
+                                    <option value="any_die" {{#if (eq systemData.bleed_like.condition "any_die")}}selected{{/if}}>When Rolling any Die</option>
+                                    <option value="on_being_hit" {{#if (eq systemData.bleed_like.condition "on_being_hit")}}selected{{/if}}>On Being Hit</option>
+                                </select>
+                                <span>then</span>
+                                <select name="system.bleed_like.operator">
+                                    <option value="maintain" {{#if (eq systemData.bleed_like.operator "maintain")}}selected{{/if}}>Do Nothing.</option>
+                                    <option value="subtract" {{#if (eq systemData.bleed_like.operator "subtract")}}selected{{/if}}>Decrease Count By</option>
+                                    <option value="divide" {{#if (eq systemData.bleed_like.operator "divide")}}selected{{/if}}>Divide Count By</option>
+                                    <option value="add" {{#if (eq systemData.bleed_like.operator "add")}}selected{{/if}}>Increase Count By</option>
+                                    <option value="multiply" {{#if (eq systemData.bleed_like.operator "multiply")}}selected{{/if}}>Multiply Count By</option>
+                                </select>
+                                {{#if (ne systemData.bleed_like.operator "maintain")}}
+                                    <input type="number" name="system.bleed_like.variable" value="{{systemData.bleed_like.variable}}" style="width: 32px; text-align: center;"/>
+                                {{/if}}
+                            </div>
+                        {{/if}}
+                        -->
+                        {{#if (or (eq systemData.condition "active") (eq systemData.condition "bleed_like"))}}
                             <div class="post_effect_buttons">
-                                <div style="margin-top: 8px; margin-bottom: 4px;">Create the following buttons for triggering the status' effect and changing the count after the effect is triggered.</div>
+                                <div style="margin-top: 8px; margin-bottom: 4px;">Create the following buttons for triggering the status' effect and changing the count after the effect is manually triggered.</div>
                                 {{#each systemData.post_actives as |post_active i| }}
                                     <div class="post_effect_contents" data-post-active="{{i}}">
                                         <a class="post_actives-control remove-option"><i class="fas fa-minus"></i></a>
@@ -85,7 +137,7 @@
                                             <option value="divide" {{#if (eq post_active.operator "divide")}}selected{{/if}}>Trigger then Divide By</option>
                                             <option value="add" {{#if (eq post_active.operator "add")}}selected{{/if}}>Trigger then Increase By</option>
                                             <option value="multiply" {{#if (eq post_active.operator "multiply")}}selected{{/if}}>Trigger then Multiply By</option>
-                                            <option value="sinking_deluge" {{#if (eq post_active.operator "sinking_deluge")}}selected{{/if}}>Trigger (Sinking) Deluge.</option> <!-- Add trigger functionality!!!! -->
+                                            <option value="sinking_deluge" {{#if (eq post_active.operator "sinking_deluge")}}selected{{/if}}>Trigger (Sinking) Deluge.</option>
                                         </select>
                                         {{#if (and (ne post_active.operator "maintain") (ne post_active.operator "sinking_deluge"))}}
                                             <input type="number" name="system.post_actives.{{i}}.variable" value="{{post_active.variable}}" style="width: 32px; text-align: center;"/>
@@ -115,7 +167,7 @@
                                 round(s) after being applied.
                             </div>
                         {{/if}}
-                        {{#if (eq systemData.condition "active")}}
+                        {{#if (or (eq systemData.condition "active") (eq systemData.condition "bleed_like"))}}
                             <div class="scene_end_effects">
                                 <div style="margin-top: 6px; margin-bottom: 4px;">At scene end,</div>
                                     <div class="scene_end_contents">
@@ -157,10 +209,13 @@
                                 </div>
                             </div>
                         {{/if}}
-                        <textarea type="text" name="system.special" placeholder="Special / Additional descriptions go here..." style="height: 64px; margin-left: 2px; margin-bottom: 8px; resize: none;">{{systemData.special}}</textarea>
+                        <textarea type="text" name="system.special" placeholder="Special / Additional descriptions go here..." style="height: 128px; margin-left: 2px; margin-bottom: 8px; resize: vertical;">{{systemData.special}}</textarea>
                     {{/if}}
                 </div>
-                <a class="status_card-control print-status_card" style="margin-top: 5px;">Print Status <i class="fas fa-print"></i></a>
+                <div style="display: flex; flex-direction: column;">
+                    <a class="status_card-control print-status_card" style="margin-top: 5px;">Print Status <i class="fas fa-print"></i></a>
+                    <a class="status_card-control print-status_card_details" style="margin-top: 5px;">Print Special Details / Flavour Text <i class="fas fa-print"></i></a>
+                </div>
             </div>
         </div>
     </div>
