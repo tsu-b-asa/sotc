@@ -886,24 +886,24 @@ export class SotCActorSheet extends ActorSheet {
       } if (sign !== -1) {
         console.log("Sinking Deluge is supposed to SUBTRACT stagger! Find actor-sheet.js lines ~850 if you wanna mess around.")
       }
-      const curr = this.actor.system.stagger.value;
+      const curr = Number(this.actor.system.stagger.value);
       delta *= 3
       delta = Math.floor(delta)
       let hp_delta = 0
-      hp_delta = Math.floor(Math.min(0, curr + delta * sign) / 2)
+      hp_delta = Math.trunc(Math.min(0, curr + delta * sign) / 2)
       if (hp_delta) {
         updates["system.stagger.value"] = 0
-        updates["system.health.value"] = (this.actor.system.health.value ?? 0) + hp_delta
+        updates["system.health.value"] = (Number(this.actor.system.health.value) ?? 0) + hp_delta
       } else {
-        updates["system.stagger.value"] = (this.actor.system.stagger.value ?? 0) + (delta * sign);
+        updates["system.stagger.value"] = (Number(this.actor.system.stagger.value) ?? 0) + (delta * sign);
       }
     } else {
       delta = Math.floor(delta)
       if (item.system.target === "hp" || item.system.target === "hp_stagger") {
-        updates["system.health.value"] = Math.max((this.actor.system.health.value ?? 0) + (delta * sign), min_stat);
+        updates["system.health.value"] = Math.max((Number(this.actor.system.health.value) ?? 0) + (delta * sign), min_stat);
       }
       if (item.system.target === "stagger" || item.system.target === "hp_stagger") {
-        updates["system.stagger.value"] = Math.max((this.actor.system.stagger.value ?? 0) + (delta * sign), min_stat);
+        updates["system.stagger.value"] = Math.max((Number(this.actor.system.stagger.value) ?? 0) + (delta * sign), min_stat);
       }
     }
     if (Object.keys(updates).length > 0) {

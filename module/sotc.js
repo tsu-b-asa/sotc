@@ -636,11 +636,11 @@ Hooks.on("combatRound", async (combat, round) => {
         if (status.system.target === "hp" || status.system.target === "hp_stagger") {
           // For the sake of statuses like sinking where we don't want to go below 1.
           //  For each item, go through and set the minimum until we have the lowest minimum (favours status strength, target weakness)
-          min_hp = Math.min(status.system.min_stat ?? -999, min_hp)
+          min_hp = Math.min(Number(status.system.min_stat) ?? -999, min_hp)
           delta_hp += delta * sign
         }
         if (status.system.target === "stagger" || status.system.target === "hp_stagger") {
-          min_stag = Math.min(status.system.min_stat ?? -999, min_stag)
+          min_stag = Math.min(Number(status.system.min_stat) ?? -999, min_stag)
           delta_stagger += delta * sign
         }
       }
@@ -658,10 +658,10 @@ Hooks.on("combatRound", async (combat, round) => {
       }
     }
     if (delta_hp) {
-      actor_updates["system.health.value"] = Math.max((actor.system.health.value ?? 0) + delta_hp, min_hp);
+      actor_updates["system.health.value"] = Math.max((Number(actor.system.health.value) ?? 0) + delta_hp, min_hp);
     }
     if (delta_stagger) {
-      actor_updates["system.stagger.value"] = Math.max((actor.system.stagger.value ?? 0) + delta_stagger, min_stag);
+      actor_updates["system.stagger.value"] = Math.max((Number(actor.system.stagger.value) ?? 0) + delta_stagger, min_stag);
     }
 
     if (status_updates.length) {
