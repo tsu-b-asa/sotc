@@ -7,6 +7,9 @@ easily add status effects as they're inflicted. Oh, and, if you'll probably want
 
 https://docs.google.com/document/d/1BnU-VNWkLPjhtYfSfpaErkzdUd_LYk2deGrSQgsatXk/edit?usp=sharing
 
+Super huge credit to Vani for all the hard work done on modules that support the system, as well as features that I've incorporated
+into the system from his fork or in inspiration of features on his fork.
+
 For a full experience of the features, I will at some point make a tutorial video (or Jakka might make one), so for now
 please enjoy this Feature Forecast instead (it's much easier to list what I intend to do, instead of what I've already 
 done <- though you can look at the changelog below for the most recent update):
