@@ -190,6 +190,39 @@
   border: none;
 }
 
+.derived_field {
+  position: relative;
+}
+.derived_data {
+    pointer-events:none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+}
+.derived_field:not(:focus-within) .raw_input, 
+.derived_field:not(:focus-within) .raw_input_2, 
+.derived_field:not(:focus-within) .raw_input_3 {
+    color: transparent;
+    caret-color: black;
+}
+.derived_field:focus-within .raw_input {
+    color: #ff5a39;
+}
+.derived_field:focus-within .raw_input_2 {
+    color: #ffff39;
+}
+.derived_field:focus-within .raw_input_3 {
+    color: #efc281;
+}
+.derived_field:focus-within .derived_data {
+    display: none;
+}
+
+
 .sotc .sheet-body .summary_data {
   flex-grow: 1;
   display: flex;
@@ -220,10 +253,10 @@
   width: 100%;
 }
 .sotc .sheet-body .battle_abilities .battle_editor_1 {
-  height: 150px;
+  height: 256px;
 }
 .sotc .sheet-body .battle_abilities .battle_editor_2 {
-  height: 150px;
+  height: 256px;
 }
 .sotc .sheet-body .battle_abilities input {
   width: 100%;
@@ -261,6 +294,7 @@
   flex-wrap: wrap;
   width: 100%;
   margin-top: 10px;
+  margin-bottom: 48px;
   gap: 5px;
 }
 .sotc .passive {
@@ -385,12 +419,20 @@
   text-shadow: #fc0 1px 0 5px, #fc0 1px 0 5px, #fc0 1px 0 5px, #fff 1px 0 5px;
   box-shadow: none;
 }
-.skill_name_char,
-.skill_roll_container,
-.edit_and_delete{
+.skill_card .skill_name_char,
+.skill_card .edit_and_delete {
+  position: absolute;
+  z-index: 3;
+  pointer-events: auto;
+}
+.skill_card .edit_and_delete {
+  bottom: 3px;
+}
+.skill_card .skill_roll_container {
   position: relative;
   z-index: 3;
   pointer-events: auto;
+  margin-top: 17.5%;
 }
 .skill_emotion_icon {
   position: absolute;
@@ -485,9 +527,10 @@
   gap: 2px;
   align-items: center;
   width: 33%;
-  height: 82.5%;
-  border: 2px double black;
+  height: 100%;
   position: relative;
+  border: none;
+  padding: 2px;
 }
 .sotc .ego_list .ego_container .skill_card {
   display: flex;
@@ -536,13 +579,23 @@
   text-align: center;
   text-shadow: #fc0 1px 0 10px, #fc0 1px 0 10px;
 }
+
 .ego_container .skill_name_char,
-.ego_container .skill_roll_container,
 .ego_container .edit_and_delete {
-  position: relative;
+  position: absolute;
   z-index: 3;
   pointer-events: auto;
 }
+.ego_container .edit_and_delete {
+  bottom: 3px;
+}
+.ego_container .skill_roll_container {
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
+  margin-top: 17.5%;
+}
+
 .ego_container .skill_mini_image_border img {
   width: 100%;
   height: 100%;
@@ -580,7 +633,42 @@
   align-content: center;
   text-align: center;
 }
+.ego_drag_handle {
+  font-size: 24px;
+  cursor: grab;
+}
 
+.active_checkbox_label {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+.active_checkbox_label .active_checkbox {
+  appearance: none;
+  background-color: black;
+  border: 2px solid #efc281;
+  box-shadow: #fc0 0 0 5px, #fc0 0 0 5px;
+  display: grid;
+  place-content: center;
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+}
+.active_checkbox:checked + .active_checkmark {
+  opacity: 1;
+}
+.active_checkmark {
+  position: absolute;
+  opacity: 0;
+  filter: drop-shadow(0 0 3px #fc0) drop-shadow(0 0 2px #fc0) drop-shadow(0 0 2px #fc0);
+  pointer-events: none;
+  border: none;
+  min-width: 90px;
+  height: 90px;
+  right: -26px;
+  bottom: -20px;
+  transition: opacity .15s;
+}
 
 .sotc .editor,
 .sotc .editor-content {
@@ -798,7 +886,7 @@
 }
 .sotc .skill .right textarea {
   color: white;
-  resize: none;
+  resize: vertical;
 }
 .sotc .skill .right textarea::placeholder {
   color: white;
@@ -839,17 +927,35 @@
 .sotc .skill .right .right_header .weight_and_emotion input {
   text-align: center;
 }
-.sotc .skill .right .right_header .skill_mods {
-  width: 85%;
+.sotc .skill .right .skill_mods {
+  width: 92%;
   margin-right: 10px;
+  margin-top: 5px;
+  margin-bottom: 16px;
   align-self: center;
   font-family: "alt_skill_font", sans-serif;
+}
+.sotc .skill .right .skill_mods_div {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 95%;
+  gap: 3px;
+  align-items: center;
+}
+.sotc .skill .right .numeric_resolve_div {
+  display: flex;
+}
+.sotc .skill .right .skill_mod_flex > * {
+  flex: 0;
+}
+.sotc .skill .right .remove-numeric_resolve:hover,
+.sotc .status .remove-passive_effect:hover {
+  text-decoration: line-through;
 }
 .sotc .skill .right .dice_section {
   flex-direction: column;
   overflow: auto;
   width: 100%;
-  margin-bottom: 10%;
 }
 .sotc .skill .right .dice_section .dice-die {
   display: flex;
@@ -866,6 +972,7 @@
   flex-direction: row;
   width: 100%;
   align-content: flex-start;
+  margin-bottom: 2px;
 }
 .sotc .skill .right .dice_section .dice_mods_div .dice_mods {
   width: 90%;
@@ -881,6 +988,11 @@
 }
 .sotc .skill .right .dice_section .div_dice {
   width: 100%;
+}
+.sotc .skill .right .dice_div {
+  display: flex;
+  gap: 4px;
+  align-items: center;
 }
 .sotc .skill .right .displayed_dice {
   display: flex;
@@ -970,9 +1082,10 @@
 .sotc.sheet.item.status {
   min-width: 656px;
   width: 656px;
-  min-height: 352px;
-  height: 480px;
+  min-height: 448px;
+  height: 448px;
 }
+
 .status select,
 .status input,
 .status textarea,
@@ -1016,9 +1129,21 @@
 }
 .scene_end_effects {
   display: flex;
-  margin-top: 4px;
+  margin-top: 8px;
   margin-bottom: 8px;
   gap: 5px;
+}
+
+
+.status_drag_handle {
+  display: flex;
+  cursor: grab;
+  font-size: 16px;
+  align-items: center;
+  color: black;
+  text-shadow: #fc0 1px 0 10px, #fc0 1px 0 10px, #fc0 1px 0 10px;
+  margin-left: 8px;
+  margin-right: 4px;
 }
 
 .buffs_and_debuffs,
@@ -1026,10 +1151,9 @@
 .other_statuses {
   display: flex;
   padding: 8px;
-  margin-left: 8px;
   margin-bottom: 8px;
   gap: 8px;
-  width: 98%;
+  width: 100%;
   justify-content: center;
 }
 .buffs,
@@ -1204,4 +1328,29 @@
   width: 640px;
   min-height: 320px;
   height: 320px;
+}
+
+.chat-message.sotc_roll {
+  background-image: url(../assets/sheets/sheet_background_two.png);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.chat-message.sotc_roll .message-header {
+    color: #efc281;
+}
+.chat-message.sotc_roll .message-content {
+    color: #efc281;
+}
+.chat-message {
+  background-image: url(../assets/sheets/sheet_background_two.png);
+  background-color: rgba(0, 0, 0, 0.65);
+}
+.chat-message .message-header {
+    color: #efc281;
+}
+.chat-message .message-content {
+    color: #efc281;
+}
+.chat-message .message-content .h3 {
+  color: white;
+  text-shadow: 0 0 5px #efc281, 0 0 5px #efc281;
 }
