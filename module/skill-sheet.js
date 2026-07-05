@@ -30,6 +30,51 @@ export class SotCSkillSheet extends ItemSheet {
     context.systemData = context.data.system;
     context.sheetEditMode = this.item.getFlag("sotc", "sheetEditMode") || false;
     context.dtypes = ATTRIBUTE_TYPES;
+    // Hehehe, I add the status effects present on the actor (if the skill is on an actor) as data that we can use for skill-sheet.html
+    const item = context.item;
+    const actor = item.actor;
+    if (actor) {
+      // Get the actor's status effects
+      const statuses = actor.items.filter(i => i.type === "status");
+      // Convert statuses to an object for the sake of selectOptions easy handling
+      // Also allows us to retriev our names easily, since the output is of the form {id1: name1, id2: name2}
+      context.actor_statuses = Object.fromEntries(statuses.map(s => [s.id, s.name]));
+    } else {
+      // Use the compendium pack if we're not on an actor. I'll need to make a way to account for adding skills onto a sheet that doesn't have the needed status
+      const compendium_pack = game.packs.get("sotc.default-statuses");
+      if (compendium_pack) {
+        const compendium_statuses = await compendium_pack.getDocuments();
+        context.actor_statuses = Object.fromEntries(compendium_statuses.map(s => [s.id, s.name]));
+      } else {
+        console.warn("SotC | Default statuses compendium not found. Please don't delete my (and your) default statuses compendium. If you did, try reinstalling the system perhaps?");
+        context.actor_statuses = {};
+      }
+    }
+
+    // Some day I will wrap my head around what is making things arrays or objects, but until then I will code defensively and convert to an array
+    const skill_modules = context.systemData.updated_skill_modules ?? {};
+    const skill_modules_array = Array.isArray(skill_modules) ? skill_modules : Object.values(skill_modules);
+
+    for (const mod of skill_modules_array) {
+      const numeric_resolves = mod.numeric_resolves ?? {};
+      const numeric_resolves_array = Array.isArray(numeric_resolves) ? numeric_resolves : Object.values(numeric_resolves);
+
+      // If our array is empty, which it was REALLY insistent on being while figuring this out, then make it with one item
+      if (!numeric_resolves_array.length) {
+        mod.numeric_resolves = [{
+          value: 0,
+          stat_or_status: "",
+          timing: "immediately"
+        }];
+      } else {
+        // Standardizes to array, which essentially does nothing if it already was an array, so just wastes time as O(n)
+        mod.numeric_resolves = numeric_resolves_array
+      }
+    }
+
+    // Well we can't do all that work for nothing, can we?
+    context.systemData.updated_skill_modules = skill_modules_array;
+
     // Again again, not sure if I even need this but I don't want to test removing it. The commenting is easier than the removing it
     context.descriptionHTML = await TextEditor.enrichHTML(context.systemData.description, {
       secrets: this.document.isOwner,
@@ -47,6 +92,8 @@ export class SotCSkillSheet extends ItemSheet {
     html.find(".dice-control").click(this._onDiceControl.bind(this));
     // For adding and removing SKILL modules, currently not used
     html.find(".skill_modules-control").click(this._onSkillModControl.bind(this));
+    // Subsequent to skill_module-control we also can add additional components to our numeric_resolves
+    html.find(".numeric_resolve-control").click(this._onNumericResolveControl.bind(this));
     // For adding and removing dice modules
     html.find(".dice_modules-control").click(this._onDiceModControl.bind(this));
     // To make the individual dice clickable, so that they can be recycled 
@@ -73,40 +120,96 @@ export class SotCSkillSheet extends ItemSheet {
   /* -------------------------------------------- */
 
   /**
-   * Add or remove a skill_modules from a skill. Currently we're not using this in any way because it looked ugly with the current implementation
-   * At a later date I'll set this up so that the modules can have actual effects and this will then be useful
+   * Add or remove a skill_modules from a skill. Now has an actual function! Hurray!!!! Adds and removes, like everything else you're about to see.
+   * I will, however, document this one as well as I can.
    * @param {Event} event             The original click event.
    * @returns {Promise<Item5e>|null}  Item with updates applied.
    * @private
    */
 
   async _onSkillModControl(event) {
+    // Stand back!, is essentially what this line does. Prevents the browser from doing work for us (it would do it wrong, if it did anything at all)
+    event.preventDefault();
+    // 
+    const a = event.currentTarget;
+    const mod_index = Number(a.dataset.modIndex);
+
+    const raw_mods = this.item.system.updated_skill_modules;
+    let mods_array = Array.isArray(raw_mods) ? raw_mods : Object.values(raw_mods || []);
+    mods_array = foundry.utils.deepClone(mods_array);
+
+    if (a.classList.contains("add-skill_modules")) {
+      mods_array.push({
+        tag: "[On Use]",
+        tagless_effect: "",
+        custom_tag: "",
+        resolved_effect: "Gain",
+        custom_resolve: "",
+        spend_resolve: {
+          value: 0,
+          stat_or_status: ""
+        },
+        numeric_resolves: [{
+          value: 0,
+          stat_or_status: ""
+        }]
+      });
+    }
+
+    if (a.classList.contains("remove-skill_modules")) {
+      await this._onSubmit(event);
+      if (!isNaN(mod_index)) mods_array.splice(mod_index, 1);
+    }
+
+    return this.item.update({
+      "system.updated_skill_modules": mods_array
+    });
+  }
+
+  // Adds and removes Numeric Resolves so we can get things like On Use gain 1 Strength and 2 Fragile
+  async _onNumericResolveControl(event) {
     event.preventDefault();
     const a = event.currentTarget;
-    const raw_mods = this.item.system.skill_modules.mods;
-    const mods_array = Array.isArray(raw_mods) ? raw_mods : Object.values(raw_mods);
-    console.log("Clicked skill_modules control:", a);
+    console.log(a)
+    const mod_index = Number(a.dataset.modIndex);
+    const resolve_index = Number(a.dataset.resolveIndex);
 
-    // Add new skill_modules
-    if ( a.classList.contains("add-skill_modules") ) {
+    const raw_modules = this.item.system.updated_skill_modules ?? {};
+    let mods_array = Array.isArray(raw_modules) ? raw_modules : Object.values(raw_modules);
+    mods_array = foundry.utils.deepClone(mods_array);
+
+    const mod = mods_array[mod_index];
+
+    const raw_numeric_resolves = mod.numeric_resolves ?? {};
+    const numeric_resolves_array = Array.isArray(raw_numeric_resolves) ? raw_numeric_resolves : Object.values(raw_numeric_resolves);
+
+    // Add numeric_resolve
+    if ( a.classList.contains("add-numeric_resolve") ) {
       await this._onSubmit(event);  // Submit any unsaved changes
-      const updated_mods_array = [...mods_array, ""];
-      return this.item.update({"system.skill_modules.mods": updated_mods_array});
+      numeric_resolves_array.push({
+        value: 0,
+        stat_or_status: ""
+      });
+    }
+    console.log("trying to remove now!")
+    // Remove numeric_resolve
+    if ( a.classList.contains("remove-numeric_resolve") ) {
+      await this._onSubmit(event);  // Submit any unsaved changes
+      if (resolve_index === 0) return; // Shouldn't be possible anyways
+      numeric_resolves_array.splice(resolve_index, 1);
     }
 
-    // Remove a skill_modules
-    if ( a.classList.contains("delete-skill_modules") ) {
-      await this._onSubmit(event);  // Submit any unsaved changes
-      const li = a.closest(".skill_modules-mods");
-      const index = Number(li.dataset.skill_modulesMods);
-      const updated_mods_array = foundry.utils.deepClone(mods_array);
-      updated_mods_array.splice(Number(li.dataset.skill_modulesMods), 1);
-      return this.item.update({"system.skill_modules.mods": updated_mods_array});
-    }
+    mod.numeric_resolves = numeric_resolves_array;
+    mods_array[mod_index] = mod;
+
+    return this.item.update({
+      "system.updated_skill_modules": mods_array
+    });
   }
 
   // Add a dice mod, so that the details can be printed on each dice when its rolled. Currently purely for visual effect and understanding
   async _onDiceModControl(event) {
+    
     event.preventDefault();
     const a = event.currentTarget;
     await this._onSubmit(event);
@@ -124,11 +227,12 @@ export class SotCSkillSheet extends ItemSheet {
 
     // Add new module
     if (a.classList.contains("add-dice_modules")) {
+
       mods_array.push("");
     }
 
     // Remove module
-    if (a.classList.contains("delete-dice_modules")) {
+    if (a.classList.contains("delete-old-dice_modules")) {
       const li = a.closest(".dice_modules-mods");
       const mod_index = Number(li?.dataset.diceMod);
       if (!isNaN(mod_index)) mods_array.splice(mod_index, 1);
@@ -188,7 +292,7 @@ export class SotCSkillSheet extends ItemSheet {
     };
   }
 
-  // How we roll the individual dice on a skill, for the purpose of recycling dice mainly or just for rerolling them. This provides no dialog box for power modification currently but should in the future
+// How we roll the individual dice on a skill, for the purpose of recycling dice mainly or just for rerolling them. This provides no dialog box for power modification currently but should in the future
 async _onRollSkillDie(event) {
   event.preventDefault();
   const index = Number(event.currentTarget.dataset.index);
@@ -263,7 +367,7 @@ async _onRollSkillDie(event) {
                   data-color="die-color-${die.type}"
                   data-modules='${JSON.stringify(Object.values(die.mods ?? {}))}'
                   data-itemname="${this.item.name}"
-                  style="width: 16px; height: 16px; color: black; margin-top: 4px; margin-left: 8px;">
+                  style="width: 16px; height: 16px; color: #efc281; margin-top: 4px; margin-left: 8px;">
                   <i class="fas fa-rotate-left"></i>
                 </a>
             </div>
