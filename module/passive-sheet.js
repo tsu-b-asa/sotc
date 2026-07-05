@@ -60,7 +60,7 @@ export class SotCPassiveSheet extends ItemSheet {
     // Please make sure to also match this up to the actor-sheet.js details
     const content = `
       <div class="sotc-passive-card">
-        <h3 style="margin:0; color: black; text-shadow: 1px 1px 2px white;">
+        <h3 style="margin-bottom: 4px; color: white; text-shadow: 0 0 5px #efc281, 0 0 5px #efc281;">
           ${name}
         </h3>
         <div class="sotc-passive-details">${details}</div>
