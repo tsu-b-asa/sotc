@@ -629,3 +629,31 @@ export class EntitySheetHelper {
     return clean;
   }
 }
+
+  /**
+   * As it does not exist in v11, though does in v13, for the sake of santizing skill names (currently at this point only needed for the damage wizard),
+   * we use the following function to convert potential nasties to not-nasties.
+   */
+export function escapeHTML(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+  /**
+   * To make it so that when adding a new skill/passive/status/etc, they are added at the BOTTOM of the list, and not at the- wait, hold on, I could just
+   *  make the list sort in descending order instead? No that'd shuffle everyone's things around unpleasantly. This is the cleaner solution, I suppose.
+   *  This function will return the next free sorting position, and so the sort done by getData will put the item to the back of the list. Hurrah
+   */
+export function getNextSort(actor, type) {
+  const items = actor.items.filter(i => i.type === type);
+  // In some console.log testing I observed that foundry liked to jump by 100000s, so I'm sticking to its tendancy here
+  //  and hoping that I don't step on any toes tooooo badly
+  if (!items.length) return 100000;
+
+  // Get the max sort value stored by foundry and the increment it by 100000 and return hurray
+  return Math.max(...items.map(i => i.sort)) + 100000;
+}
